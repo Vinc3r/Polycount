@@ -6,8 +6,8 @@ Until I figure how to create UI, just open .py on the text editor panel and pres
 
 ## Descriptions
 
-### renameImage
+### [renameImage](https://github.com/Vinc3r/BlenderScripts/blob/master/renameImages.py)
 Rename all image data-block using filename.
 
-### switchUV
+### [switchUV](https://github.com/Vinc3r/BlenderScripts/blob/master/switchUV.py)
 Easily switch active UV panel of selected objects. Useful when you set viewport shading to *Material* or *Texture*, or with Baketool plugin when adding objects to lightmap baking.
