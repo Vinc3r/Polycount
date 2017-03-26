@@ -2,12 +2,9 @@
 Some little scripts needed to work faster, often oriented 3D realtime workflow.
 
 ## How to use
-Until I figure how to create UI, just open .py on the text editor panel and press alt + P
+Until I figure how to create addon setup, just open nothing-is-3D-tools.py on the text editor panel and press alt + P
 
-## Descriptions
+## Description
 
-### [renameImage](https://github.com/Vinc3r/BlenderScripts/blob/master/renameImages.py)
-Rename all image data-block using filename.
-
-### [switchUV](https://github.com/Vinc3r/BlenderScripts/blob/master/switchUV.py)
-Easily switch active UV panel of selected objects. Useful when you set viewport shading to *Material* or *Texture*, or with Baketool plugin when adding objects to lightmap baking.
+* easily switch active UV channel of selected objects. (useful when you set viewport shading to *Material* or *Texture*, or with Baketool plugin when adding objects to lightmap baking)
+* rename UV channels as UVMap & UV2 (useful when meshes imported from other 3d software)
