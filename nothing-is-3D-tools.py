@@ -3,7 +3,7 @@ bl_info = {
     "description": "Some scripts 3D realtime workflow oriented",
     "author": "Vincent Lamy",
     "location": "3D view toolshelf - Addons tab",
-	"category": "Mesh"
+    "category": "Mesh"
 }
 
 import bpy
