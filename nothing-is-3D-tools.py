@@ -3,6 +3,7 @@ bl_info = {
     "description": "Some scripts 3D realtime workflow oriented",
     "author": "Vincent Lamy",
     "location": "3D view toolshelf - Addons tab",
+	"category": "Mesh"
 }
 
 import bpy
@@ -55,9 +56,8 @@ class Nothing3DPanel(bpy.types.Panel):
     bl_category = "Addons"
 
     def draw(self, context):
-        layout = self.layout  
-        scene = context.scene
-        
+        layout = self.layout
+
         box1 = layout.box()
         box1.label(text = "UV channels")
         
