@@ -3,15 +3,12 @@ bl_info = {
     "description": "Some scripts 3D realtime workflow oriented",
     "author": "Vincent Lamy",
     "location": "3D view toolshelf - Addons tab",
-    "category": "Mesh"
+    "category": "Mesh",	
+    'wiki_url': 'https://github.com/Vinc3r/BlenderScripts',
+    'tracker_url': 'https://github.com/Vinc3r/BlenderScripts/issues',
 }
 
 import bpy
-
-global C
-C = bpy.context
-global D
-D = bpy.data
 
 class renameUVChannel(bpy.types.Operator):
     """Normalize UV channel naming"""
@@ -19,7 +16,7 @@ class renameUVChannel(bpy.types.Operator):
     bl_label = "Rename UV chans as UVMap and UV2"
     
     def execute(self, context):
-        for obj in C.selected_objects:
+        for obj in context.selected_objects:
             if obj.type == 'MESH':
                 try:
                     obj.data.uv_textures[0].name = "UVMap"
@@ -40,7 +37,7 @@ class SelectUVChannel(bpy.types.Operator):
     select_UV = bpy.props.IntProperty()
     
     def execute(self, context):
-        for obj in C.selected_objects:
+        for obj in context.selected_objects:
             if obj.type == 'MESH':
                 try:
                     obj.data.uv_textures[self.select_UV].active = True
