@@ -3,8 +3,14 @@ Some little scripts needed to work faster, often oriented 3D realtime workflow.
 
 ## nothing-is-3D-tools.py
 
+[download link](https://raw.githubusercontent.com/Vinc3r/BlenderScripts/master/nothing-is-3D-tools.py)
+
 Install by using _Install from File..._ in Blender User Preferences / Add-ons tab.
 Tools will be placed on Tools panel of 3DView, in _Addons_ tab.
+
+![nothing-is-3d_tools_default](https://raw.githubusercontent.com/Vinc3r/BlenderScripts/master/README-assets/nothing-is-3d-tools_default.png)
+
+
 
 ### UV channels
 
