@@ -1,10 +1,13 @@
 # BlenderScripts
 Some little scripts needed to work faster, often oriented 3D realtime workflow.
 
-## How to use
-Until I figure how to create addon setup, just open nothing-is-3D-tools.py on the text editor panel and press alt + P
+## nothing-is-3D-tools.py
 
-## Description
+Install by using _Install from File..._ in Blender User Preferences / Add-ons tab.
+Tools will be placed on Tools panel of 3DView, in _Addons_ tab.
 
-* easily switch active UV channel of selected objects. (useful when you set viewport shading to *Material* or *Texture*, or with Baketool plugin when adding objects to lightmap baking)
-* rename UV channels as UVMap & UV2 (useful when meshes imported from other 3d software)
+### UV channels
+
+- tools are applied on selection,
+- _Select_ allow to quickly switch active UV. Usefull when you're in Material shading viewport, or when set render list in Baketool plugin,
+- _Normalize naming_ rename UV1 to _UVMap_ and UV2 to _UV2_. Usefull when import meshes from other 3D softwares.
