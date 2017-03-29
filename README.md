@@ -1,7 +1,7 @@
 # BlenderScripts
 Some little scripts needed to work faster, often oriented 3D realtime workflow.
 
-## nothing-is-3D-tools.py
+## Nothing-is-3D tools
 
 [download link](https://raw.githubusercontent.com/Vinc3r/BlenderScripts/master/nothing-is-3D-tools.py)
 
