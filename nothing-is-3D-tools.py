@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Nothing-is-3D tools",
     "description": "Some scripts 3D realtime workflow oriented",
-    "author": "Vincent Lamy",
+    "author": "Vincent (Vinc3r) Lamy",
     "location": "3D view toolshelf - Addons tab",
     "category": "Mesh",	
     'wiki_url': 'https://github.com/Vinc3r/BlenderScripts',
@@ -114,6 +114,8 @@ class Nothing3DPanel(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
+        
+        """ UV Channels box """
 
         UVchanBox = layout.box()
         UVchanBox.label(text = "UV channels :")
@@ -122,6 +124,8 @@ class Nothing3DPanel(bpy.types.Panel):
         row.label(text = "Select ")
         row.operator("nothing3d.select_uv_channel", text = "UV1").select_UV = 0
         row.operator("nothing3d.select_uv_channel", text = "UV2").select_UV = 1
+        
+        """ Import cleaner box """
         
         importHelperBox = layout.box()
         importHelperBox.label(text = "Import cleaner :")
@@ -134,6 +138,49 @@ class Nothing3DPanel(bpy.types.Panel):
         row.operator("nothing3d.bi_mtl_set_intensity", text = "Diffuse intensity")
         row.operator("nothing3d.bi_mtl_set_white", text = "", icon = "SOLID")
         row.operator("nothing3d.bi_mtl_reset_alpha", text = "", icon = "MATCAP_24")
+
+class Nothing3DStatsPanel(bpy.types.Panel):
+    bl_label = "Nothing-is-3D stats"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "TOOLS"
+    bl_category = "Addons"
+
+    def draw(self, context):
+        layout = self.layout
+        
+        """ Selection stats box """
+        
+        selectionStatsBox = layout.box()
+        row = selectionStatsBox.row(align = True)
+        row.label(text = "Object")
+        row.label(text = "Verts")
+        row.label(text = "Tris")
+
+        # test only selected meshes
+        selectedMeshes = [o for o in bpy.context.selected_objects if o.type == 'MESH']
+
+        for element in selectedMeshes:
+            triCount = 0
+            hasNGon = False
+            for poly in element.data.polygons:
+                # first check if quad
+                if len(poly.vertices) == 4:
+                    triCount += 2
+                # or tri
+                elif len(poly.vertices) == 3:
+                    triCount += 1
+                # or oops, ngon here, alert !
+                else:
+                    triCount += 3
+                    hasNGon = True
+            row = selectionStatsBox.row(align = True)
+            row.label(text = "%s" % (element.name))
+            row.label(text = "%i " % (len(element.data.vertices)))
+            if not hasNGon:
+                row.label(text = "%i" % (triCount))
+            else:
+                # visual indicator if ngon
+                row.label(text = "± %i" % (triCount))
         
 
 def register():
@@ -144,6 +191,7 @@ def register():
     bpy.utils.register_class(BImtlResetAlpha)
     bpy.utils.register_class(disableAutosmooth)
     bpy.utils.register_class(Nothing3DPanel)
+    bpy.utils.register_class(Nothing3DStatsPanel)
 
 def unregister():
     bpy.utils.unregister_class(renameUVChannel)
@@ -153,6 +201,7 @@ def unregister():
     bpy.utils.unregister_class(BImtlResetAlpha)
     bpy.utils.unregister_class(disableAutosmooth)
     bpy.utils.unregister_class(Nothing3DPanel)
+    bpy.utils.unregister_class(Nothing3DStatsPanel)
 
 if __name__ == "__main__":
     register()
