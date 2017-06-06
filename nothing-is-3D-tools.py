@@ -107,7 +107,7 @@ class disableAutosmooth(bpy.types.Operator):
         return {'FINISHED'}
 
 class Nothing3DPanel(bpy.types.Panel):
-    bl_label = "Nothing-is-3D tools"
+    bl_label = "Nothing-is-3D Tools"
     bl_space_type = "VIEW_3D"
     bl_region_type = "TOOLS"
     bl_category = "Addons"
@@ -140,7 +140,7 @@ class Nothing3DPanel(bpy.types.Panel):
         row.operator("nothing3d.bi_mtl_reset_alpha", text = "", icon = "MATCAP_24")
 
 class Nothing3DStatsPanel(bpy.types.Panel):
-    bl_label = "Nothing-is-3D stats"
+    bl_label = "Nothing-is-3D Tools : Stats"
     bl_space_type = "VIEW_3D"
     bl_region_type = "TOOLS"
     bl_category = "Addons"
