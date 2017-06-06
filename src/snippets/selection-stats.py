@@ -3,8 +3,7 @@ import bpy
 
 class tmpPanel(bpy.types.Panel):
 
-# thanks to sambler for some piece of code
-# https://github.com/sambler/addonsByMe/blob/master/mesh_summary.py
+# thanks to sambler for some piece of code https://github.com/sambler/addonsByMe/blob/master/mesh_summary.py
 
     bl_label = "tmpPanel"
     bl_space_type = "VIEW_3D"

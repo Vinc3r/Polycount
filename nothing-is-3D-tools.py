@@ -149,6 +149,7 @@ class Nothing3DStatsPanel(bpy.types.Panel):
         layout = self.layout
         
         """ Selection stats box """
+        # thanks to sambler for some piece of code https://github.com/sambler/addonsByMe/blob/master/mesh_summary.py
         
         selectionStatsBox = layout.box()
         row = selectionStatsBox.row(align = True)
