@@ -159,6 +159,9 @@ class Nothing3DStatsPanel(bpy.types.Panel):
 
         # test only selected meshes
         selectedMeshes = [o for o in bpy.context.selected_objects if o.type == 'MESH']
+              
+        totalTriInSelection = 0
+        totalVertsInSelection = 0
 
         for element in selectedMeshes:
             triCount = 0
@@ -174,6 +177,10 @@ class Nothing3DStatsPanel(bpy.types.Panel):
                 else:
                     triCount += 3
                     hasNGon = True
+            # adding element stats to total count
+            totalTriInSelection += triCount
+            totalVertsInSelection += len(element.data.vertices)
+            # generate table
             row = selectionStatsBox.row(align = True)
             row.label(text = "%s" % (element.name))
             row.label(text = "%i " % (len(element.data.vertices)))
@@ -182,6 +189,12 @@ class Nothing3DStatsPanel(bpy.types.Panel):
             else:
                 # visual indicator if ngon
                 row.label(text = "± %i" % (triCount))
+        # show total stats                
+        selectionStatsBox.row().separator() 
+        row = selectionStatsBox.row(align = True)
+        row.label(text = "TOTAL")
+        row.label(text = "%i" % (totalVertsInSelection))
+        row.label(text = "%i" % (totalTriInSelection))
         
 
 def register():

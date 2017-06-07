@@ -1,10 +1,9 @@
 import bpy
 #import bmesh
 
-class tmpPanel(bpy.types.Panel):
-
 # thanks to sambler for some piece of code https://github.com/sambler/addonsByMe/blob/master/mesh_summary.py
 
+class tmpPanel(bpy.types.Panel):
     bl_label = "tmpPanel"
     bl_space_type = "VIEW_3D"
     bl_region_type = "TOOLS"
@@ -21,6 +20,9 @@ class tmpPanel(bpy.types.Panel):
 
         # test only meshes
         selectedMeshes = [o for o in bpy.context.selected_objects if o.type == 'MESH']
+        
+        totalTriInSelection = 0
+        totalVertsInSelection = 0
 
         for element in selectedMeshes:
             triCount = 0
@@ -36,6 +38,10 @@ class tmpPanel(bpy.types.Panel):
                 else:
                     triCount += 3
                     hasNGon = True
+            # adding element stats to total count
+            totalTriInSelection += triCount
+            totalVertsInSelection += len(element.data.vertices)
+            # generate table
             row = scriptBox.row(align = True)
             row.label(text = "%s" % (element.name))
             row.label(text = "%i " % (len(element.data.vertices)))
@@ -44,6 +50,12 @@ class tmpPanel(bpy.types.Panel):
             else:
                 # visual indicator if ngon
                 row.label(text = "± %i" % (triCount))
+        # show total stats                
+        scriptBox.row().separator() 
+        row = scriptBox.row(align = True)
+        row.label(text = "TOTAL")
+        row.label(text = "%i" % (totalVertsInSelection))
+        row.label(text = "%i" % (totalTriInSelection))
 
            # scriptBox.label(text = "%s - %i VERTS - %i FACES" % (element.data.name, len(element.data.vertices), len(element.data.polygons)))
            # bpy.data.meshes.remove(tempMesh, True)

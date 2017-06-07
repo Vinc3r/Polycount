@@ -1,6 +1,8 @@
 # BlenderScripts
 Some little scripts needed to work faster, often oriented 3D realtime workflow.
 
+[download](https://raw.githubusercontent.com/Vinc3r/BlenderScripts/master/nothing-is-3D-tools.py) - [changelog](https://github.com/Vinc3r/BlenderScripts/blob/master/changelog.md)
+
 ## Nothing-is-3D tools
 
 ### Installation
