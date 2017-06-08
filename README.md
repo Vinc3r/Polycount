@@ -17,7 +17,7 @@ Tools will be placed on Tools panel of 3DView, in _Addons_ tab.
 
 ### Usage
 
-#### Nothing-is-3D tools
+#### Nothing-is-3D Tools
 
 ##### UV channels
 
@@ -28,6 +28,6 @@ Tools will be placed on Tools panel of 3DView, in _Addons_ tab.
 - _Rename UV channels_ rename UV1 to _UVMap_ and UV2 to _UV2_. Usefull when import meshes from other 3D softwares. Next button disable auto-smoothing. Apply on selection,
 - in Blender Render, _Diffuse intensity_ set diffuse intensity to 1, next button set color to white, next reset alpha params. Apply on selection.
 
-#### Nothing-is-3D stats
+#### Nothing-is-3D Tools : Stats
 
 - list meshes in selection, show vertices & triangles number. Add **±** when nGons are found.
