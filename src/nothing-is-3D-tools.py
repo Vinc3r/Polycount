@@ -1,12 +1,12 @@
 bl_info = {
     "name": "Nothing-is-3D tools",
     "description": "Some scripts 3D realtime workflow oriented",
-    "author": "Vincent (Vinc3r) Lamy",
+    "author": "Vincent (Vinc3r) Lamy - Thanks for some example or piece of code from Wazou, Pistiwique, Alexander Milovsky, all Blender community",
     "location": "3D view toolshelf - Nthg is 3D tab",
     "category": "Mesh",	
     "wiki_url": 'https://github.com/Vinc3r/BlenderScripts',
     "tracker_url": 'https://github.com/Vinc3r/BlenderScripts/issues',
-    "version": (2017, 11, 24, 2020),
+    "version": (2017, 11, 29, 2127),
 }
 
 import bpy
@@ -63,7 +63,7 @@ class BImtlSetWhite(bpy.types.Operator):
         return {'FINISHED'}
     
 class BImtlSetSpec(bpy.types.Operator):
-    """Set diffuse color to white"""
+    """Set specular color to dark gray"""
     bl_idname = "nothing3d.bi_mtl_set_spec"
     bl_label = "Set default spec color"
     
@@ -87,6 +87,70 @@ class BImtlResetAlpha(bpy.types.Operator):
                     mat.transparency_method = 'Z_TRANSPARENCY'
                     mat.alpha = 1
                     mat.use_transparency = False
+        return {'FINISHED'}
+    
+class BImtlTexSolid(bpy.types.Operator):
+    """Set diffuse texture on Textured Solid"""
+    bl_idname = "nothing3d.bi_tex_solid"
+    bl_label = "Set texture face"
+    set_texture_type = bpy.props.IntProperty()
+    
+    def execute(self, context):
+        for obj in context.selected_objects:
+            if obj.type == 'MESH' and len(obj.data.materials) > 0:
+                
+                is_editmode = (obj.mode == 'EDIT')
+                
+                # if in EDIT Mode switch to OBJECT
+                if is_editmode:
+                    bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+
+                mesh = obj.data
+                
+                # active texture
+                for matID in range(len(obj.data.materials)):
+                    mat = mesh.materials[matID]
+                    for texSlot in range(len(mat.texture_slots)):
+                        if self.set_texture_type == 0:
+                            if mat.texture_slots[texSlot] != None \
+                            and mat.texture_slots[texSlot].use_map_color_diffuse \
+                            and len(mesh.uv_textures) > 0 \
+                            and obj.data.uv_textures[self.set_texture_type] is not None:
+                                mesh.uv_textures[self.set_texture_type].active = True
+                                mat.active_texture_index = texSlot
+                        if self.set_texture_type == 1:
+                            if mat.texture_slots[texSlot] != None and mat.texture_slots[texSlot].use_map_ambient:
+                                mat.active_texture_index = texSlot
+                
+                # if no UVtex - create it
+                if not mesh.uv_textures:
+                    uvtex = bpy.ops.mesh.uv_texture_add()
+
+                uvtex = mesh.uv_textures.active
+                uvtex.active_render = True                
+                img = None    
+                aspect = 1.0
+                
+                # check all object materials
+                for matID in range(len(obj.data.materials)):
+                    mat = mesh.materials[matID]
+                    # if materials use texture
+                    if mat.active_texture != None:
+                        texSlot = mat.active_texture_index
+                        img = mat.active_texture
+                        # some check to sync active UVmap and images associate
+                        if not is_editmode and img.type == "IMAGE" \
+                        and mat.texture_slots[texSlot].uv_layer == mesh.uv_layers.active.name \
+                        or mat.texture_slots[texSlot].uv_layer == "":
+                            # assign image according to material assignation
+                            for f in mesh.polygons:
+                                if f.material_index == matID:
+                                    uvtex.data[f.index].image = img.image
+                            
+                # Back to EDIT Mode
+                if is_editmode:
+                    bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+
         return {'FINISHED'}
     
 class disableAutosmooth(bpy.types.Operator):
@@ -133,12 +197,15 @@ class Nothing3DMaterialPanel(bpy.types.Panel):
     def draw(self, context):
         # Blender Render
         if bpy.context.scene.render.engine == "BLENDER_RENDER":
-            layout = self.layout     
+            layout = self.layout
             row = layout.row(align = True)
             row.operator("nothing3d.bi_mtl_set_intensity", text = "Diffuse intensity to 1")
             row.operator("nothing3d.bi_mtl_set_white", text = "", icon = "SOLID")
             row.operator("nothing3d.bi_mtl_reset_alpha", text = "", icon = "MATCAP_24")
             row.operator("nothing3d.bi_mtl_set_spec", text = "", icon = "BRUSH_TEXFILL")
+            row = layout.row(align = True)
+            row.operator("nothing3d.bi_tex_solid", text = "", icon = "TEXTURE").set_texture_type = 0
+            row.operator("nothing3d.bi_tex_solid", text = "", icon = "BRUSH_SMEAR").set_texture_type = 1
         # Cycles
         elif bpy.context.scene.render.engine == "CYCLES":
             print("Nothing is 3D : Cycles not yet supported")
