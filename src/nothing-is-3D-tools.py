@@ -11,6 +11,8 @@ bl_info = {
 
 import bpy
 
+print("++++ nothing-is-3D tools loaded ++++")
+
 class renameUVChannel(bpy.types.Operator):
     """Rename the first two UV channels as UVMap and UV2"""
     bl_idname = "nothing3d.rename_uv_channel"
@@ -58,6 +60,19 @@ class BImtlSetWhite(bpy.types.Operator):
             if obj.type == 'MESH' and len(obj.data.materials) > 0 :
                 for mat in obj.data.materials:
                     mat.diffuse_color = (1,1,1)
+        return {'FINISHED'}
+    
+class BImtlSetSpec(bpy.types.Operator):
+    """Set diffuse color to white"""
+    bl_idname = "nothing3d.bi_mtl_set_spec"
+    bl_label = "Set default spec color"
+    
+    def execute(self, context):
+        for obj in context.selected_objects:
+            if obj.type == 'MESH' and len(obj.data.materials) > 0 :
+                for mat in obj.data.materials:
+                    mat.specular_color = (.1,.1,.1)
+                    mat.specular_intensity = 1
         return {'FINISHED'}
     
 class BImtlResetAlpha(bpy.types.Operator):
@@ -123,6 +138,7 @@ class Nothing3DMaterialPanel(bpy.types.Panel):
             row.operator("nothing3d.bi_mtl_set_intensity", text = "Diffuse intensity to 1")
             row.operator("nothing3d.bi_mtl_set_white", text = "", icon = "SOLID")
             row.operator("nothing3d.bi_mtl_reset_alpha", text = "", icon = "MATCAP_24")
+            row.operator("nothing3d.bi_mtl_set_spec", text = "", icon = "BRUSH_TEXFILL")
         # Cycles
         elif bpy.context.scene.render.engine == "CYCLES":
             print("Nothing is 3D : Cycles not yet supported")
