@@ -117,21 +117,26 @@ class BImtlTexSolid(bpy.types.Operator):
                     for texSlot in range(len(mat.texture_slots)):
                         # diffuse mode
                         if self.set_texture_type == 0:
+                            # check if : there is a texture, if it used diffuse channel, if it use uv coord, if mesh has an uv chan
                             if mat.texture_slots[texSlot] != None \
                             and mat.texture_slots[texSlot].use_map_color_diffuse \
                             and mat.texture_slots[texSlot].texture_coords == "UV" \
                             and len(mesh.uv_textures) > 0 \
                             and obj.data.uv_textures[self.set_texture_type] is not None:
-                                mesh.uv_textures[self.set_texture_type].active = True
+                                # select mesh first UV channel
+                                mesh.uv_textures[0].active = True
+                                # set active texture as diffuse texture
                                 mat.active_texture_index = texSlot
                         # lightmap mode
                         if self.set_texture_type == 1:
                             if mat.texture_slots[texSlot] != None \
                             and mat.texture_slots[texSlot].use_map_ambient \
                             and mat.texture_slots[texSlot].texture_coords == "UV" \
-                            and len(mesh.uv_textures) > 0 \
+                            and len(mesh.uv_textures) > 1 \
                             and obj.data.uv_textures[self.set_texture_type] is not None:
-                                mesh.uv_textures[self.set_texture_type].active = True
+                                # select mesh UV2 channel
+                                mesh.uv_textures[1].active = True
+                                # set active texture as ambient texture
                                 mat.active_texture_index = texSlot
                 
                     # if no UVtex - create it
