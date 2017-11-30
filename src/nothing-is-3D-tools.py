@@ -93,55 +93,65 @@ class BImtlTexSolid(bpy.types.Operator):
     """Set diffuse texture on Textured Solid"""
     bl_idname = "nothing3d.bi_tex_solid"
     bl_label = "Set texture face"
+    # 0 = diffuse mode, 1 = lightmap mode
     set_texture_type = bpy.props.IntProperty()
     
     def execute(self, context):
+        # get object selected
         for obj in context.selected_objects:
+            #only meshes with at least one material
             if obj.type == 'MESH' and len(obj.data.materials) > 0:
-                
+                mesh = obj.data
                 is_editmode = (obj.mode == 'EDIT')
                 
                 # if in EDIT Mode switch to OBJECT
                 if is_editmode:
-                    bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
-
-                mesh = obj.data
+                    bpy.ops.object.mode_set(mode='OBJECT', toggle=False)                
                 
-                # active texture
+                
                 for matID in range(len(obj.data.materials)):
                     mat = mesh.materials[matID]
+                    
+                    # this set active texture for each material face assignation
+                    
                     for texSlot in range(len(mat.texture_slots)):
+                        # diffuse mode
                         if self.set_texture_type == 0:
                             if mat.texture_slots[texSlot] != None \
                             and mat.texture_slots[texSlot].use_map_color_diffuse \
+                            and mat.texture_slots[texSlot].texture_coords == "UV" \
                             and len(mesh.uv_textures) > 0 \
                             and obj.data.uv_textures[self.set_texture_type] is not None:
                                 mesh.uv_textures[self.set_texture_type].active = True
                                 mat.active_texture_index = texSlot
+                        # lightmap mode
                         if self.set_texture_type == 1:
-                            if mat.texture_slots[texSlot] != None and mat.texture_slots[texSlot].use_map_ambient:
+                            if mat.texture_slots[texSlot] != None \
+                            and mat.texture_slots[texSlot].use_map_ambient \
+                            and mat.texture_slots[texSlot].texture_coords == "UV" \
+                            and len(mesh.uv_textures) > 0 \
+                            and obj.data.uv_textures[self.set_texture_type] is not None:
+                                mesh.uv_textures[self.set_texture_type].active = True
                                 mat.active_texture_index = texSlot
                 
-                # if no UVtex - create it
-                if not mesh.uv_textures:
-                    uvtex = bpy.ops.mesh.uv_texture_add()
+                    # if no UVtex - create it
+                    if not mesh.uv_textures:
+                        uvtex = bpy.ops.mesh.uv_texture_add()
 
-                uvtex = mesh.uv_textures.active
-                uvtex.active_render = True                
-                img = None    
-                aspect = 1.0
-                
-                # check all object materials
-                for matID in range(len(obj.data.materials)):
-                    mat = mesh.materials[matID]
-                    # if materials use texture
+                    uvtex = mesh.uv_textures.active
+                    uvtex.active_render = True                
+                    img = None    
+                    aspect = 1.0
+                    
+                    # this set texture face
+                    
                     if mat.active_texture != None:
                         texSlot = mat.active_texture_index
                         img = mat.active_texture
                         # some check to sync active UVmap and images associate
                         if not is_editmode and img.type == "IMAGE" \
-                        and mat.texture_slots[texSlot].uv_layer == mesh.uv_layers.active.name \
-                        or mat.texture_slots[texSlot].uv_layer == "":
+                        and (mat.texture_slots[texSlot].uv_layer == mesh.uv_layers.active.name \
+                        or mat.texture_slots[texSlot].uv_layer == ""):
                             # assign image according to material assignation
                             for f in mesh.polygons:
                                 if f.material_index == matID:
