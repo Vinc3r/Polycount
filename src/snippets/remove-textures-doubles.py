@@ -4,30 +4,32 @@ print("++++ remove textures doubles ++++")
 
 def remove_textures_doubles():
     
-    single_img_instance = []
     D = bpy.data
-
-    # check all images
-    for i in D.images:
-        # first considering img not already used
-        is_already_in_list = False
-        # of course, we need to start with a list containing some shit
-        if single_img_instance == []:
-            single_img_instance.append(i.filepath)
-            is_already_in_list = True
-        # ask if img is already used
-        for img in single_img_instance:
-            if i.filepath == img:
-                # ach nein! img already used!
-                is_already_in_list = True
-        if not is_already_in_list:
-           # lets add to the list
-           single_img_instance.append(i.filepath)
-        
-    print(single_img_instance)
     
     if bpy.context.scene.render.engine == "BLENDER_RENDER":
-        print("porut")
+              
+        # check all images
+        for i in D.images:            
+            imgName = i.filepath
+            imgNameSplit = imgName.split("/")
+            imgName = imgNameSplit[len(imgNameSplit)-1]
+            if i.name != imgName:
+                i.name = imgName
+                
+        # now check all texture slots in materials
+        for mat in D.materials:
+            for texSlot in range(len(mat.texture_slots)):
+                activeTexSlot = mat.texture_slots[texSlot]
+                if activeTexSlot != None \
+                and activeTexSlot.texture.image != None:
+                    imgFilePath = activeTexSlot.texture.image.filepath
+                    for img in D.images:
+                        # if img use the same path
+                        # so lets assign it and break the loop
+                        if imgFilePath == img.filepath:
+                            activeTexSlot.texture.image = img
+                            continue                    
+        
     elif bpy.context.scene.render.engine == 'CYCLES':
         print("Cycles not (yet) supported")
     else:
