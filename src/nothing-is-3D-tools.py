@@ -34,7 +34,9 @@ class SelectUVChannel(bpy.types.Operator):
     
     def execute(self, context):
         for obj in context.selected_objects:
-            if obj.type == 'MESH' and len(obj.data.uv_textures) > 0 and obj.data.uv_textures[self.select_UV] is not None:
+            if obj.type == 'MESH' \
+            and len(obj.data.uv_textures) > 0 \
+            and len(obj.data.uv_textures) >= self.select_UV:
                 obj.data.uv_textures[self.select_UV].active = True
         return {'FINISHED'}
 
