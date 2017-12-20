@@ -22,7 +22,7 @@ class renameUVChannel(bpy.types.Operator):
         for obj in context.selected_objects:
             if obj.type == 'MESH' and len(obj.data.uv_textures) > 0 :
                 obj.data.uv_textures[0].name = "UVMap"
-                if obj.data.uv_textures[1] is not None :
+                if len(obj.data.uv_textures) > 1:
                     obj.data.uv_textures[1].name = "UV2"
         return {'FINISHED'}
 
