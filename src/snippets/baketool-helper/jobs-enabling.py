@@ -2,6 +2,8 @@ import bpy
 
 startJob = 0
 endJob = 6
+device = "GPU"
+wantedSamples = 2048
 
 D = bpy.data
 
@@ -20,11 +22,16 @@ def setBakeToolJobsEnable():
             print("job {} enabled".format(job))
             
 def setBakeToolJobsSamples():
-    wantedSamples = 2048
     for job in range(len(D.scenes[0].BakeTool_Jobs.Jobs)):
         D.scenes[0].BakeTool_Jobs.Jobs[job].job_pass.Pass[0].samples = wantedSamples
     print("samples set to {}".format(wantedSamples))
+    
+def setBakeToolJobsDevice():
+    for job in range(len(D.scenes[0].BakeTool_Jobs.Jobs)):
+        D.scenes[0].BakeTool_Jobs.Jobs[job].job_pass.Pass[0].render_device = device
+    print("device set to {}".format(device))
 
 resetAllBakeToolJobs()
 #setBakeToolJobsEnable()
 #setBakeToolJobsSamples()
+#setBakeToolJobsDevice()
