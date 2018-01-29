@@ -34,10 +34,11 @@ class SelectUVChannel(bpy.types.Operator):
     
     def execute(self, context):
         for obj in context.selected_objects:
-            if obj.type == 'MESH' \
-            and len(obj.data.uv_textures) > 0 \
-            and len(obj.data.uv_textures) >= self.select_UV:
-                obj.data.uv_textures[self.select_UV].active = True
+            if obj.type == 'MESH':
+                if len(obj.data.uv_textures) > 1:
+                    obj.data.uv_textures[self.select_UV].active = True
+                elif len(obj.data.uv_textures) == 1:
+                    print("{} has no UV2".format(obj.name))
         return {'FINISHED'}
 
 class BImtlSetIntensity(bpy.types.Operator):
