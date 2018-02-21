@@ -9,5 +9,5 @@ D = bpy.data
 """
 
 for img in D.images:
-    img.filepath = img.filepath.replace("\\\\my-network-path-example", "A:")
+    img.filepath = img.filepath.replace(r"\\my-network-path-example", "A:")
     
