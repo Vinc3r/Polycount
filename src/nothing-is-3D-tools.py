@@ -1,14 +1,15 @@
 bl_info = {
     "name": "Nothing-is-3D tools",
-    "description": "Some scripts 3D realtime workflow oriented",
-    "author": "Vincent (Vinc3r) Lamy - Thanks for some example or piece of code from Wazou, Pistiwique, Alexander Milovsky, all Blender community",
-    "location": "3D view toolshelf - Nthg is 3D tab",
-    "category": "Mesh",	
+    "description": "Some scripts 3D realtime workflow oriented.",
+    "author": "Vincent (V!nc3r) Lamy, nothing-is-3d.com",
+    "location": "3D view toolshelf > Nthg-is-3D tab",
+    "category": "3D View",	
     "wiki_url": 'https://github.com/Vinc3r/BlenderScripts',
     "tracker_url": 'https://github.com/Vinc3r/BlenderScripts/issues',
     "version": (0, 2, 0),
 }
 
+#Thanks for some examples or pieces of code from Wazou, Pistiwique, Alexander Milovsky, all Blender community and of course Blender devs.
 import bpy
 
 print("++++ nothing-is-3D tools loaded ++++")
@@ -66,7 +67,7 @@ class BImtlSetWhite(bpy.types.Operator):
         return {'FINISHED'}
     
 class BImtlSetSpec(bpy.types.Operator):
-    """Set specular color to dark gray"""
+    """Set specular color to black"""
     bl_idname = "nothing3d.bi_mtl_set_spec"
     bl_label = "Set default spec color"
     
@@ -74,7 +75,7 @@ class BImtlSetSpec(bpy.types.Operator):
         for obj in context.selected_objects:
             if obj.type == 'MESH' and len(obj.data.materials) > 0 :
                 for mat in obj.data.materials:
-                    mat.specular_color = (.1,.1,.1)
+                    mat.specular_color = (0, 0, 0)
                     mat.specular_intensity = 1
         return {'FINISHED'}
     

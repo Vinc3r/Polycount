@@ -2,8 +2,15 @@
 
 2018-03-18
 
+### Misc
+
 - fix some bugs when selecting UV2 which doesn't exist
-- add diffuse/lightmap to texface functionnality (Blender Render)
+- stats panel: clicking on the object name make it the active one
+
+### Blender Render
+
+- add *diffuse/lightmap to texface* functionnality
+- add *set spec to black*
 
 ## v0.0.2
 
