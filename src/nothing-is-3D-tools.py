@@ -6,7 +6,7 @@ bl_info = {
     "category": "Mesh",	
     "wiki_url": 'https://github.com/Vinc3r/BlenderScripts',
     "tracker_url": 'https://github.com/Vinc3r/BlenderScripts/issues',
-    "version": (0, 1, 0, "beta"),
+    "version": (0, 2, 0),
 }
 
 import bpy
