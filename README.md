@@ -3,7 +3,7 @@ Some little scripts needed to work faster, often oriented 3D realtime workflow.
 
 Help to navigate between UV1 & 2, clean FBX import, and keep informed about object polycount.
 
-[download](https://raw.githubusercontent.com/Vinc3r/BlenderScripts/master/nothing-is-3D-tools.py) - [changelog](https://github.com/Vinc3r/BlenderScripts/blob/master/changelog.md)
+[download](https://raw.githubusercontent.com/Vinc3r/BlenderScripts/master/nothing-is-3D-tools.py) - [changelog](https://github.com/Vinc3r/BlenderScripts/blob/master/changelog.md) - you may want try the beta-but-stable version for now, check the [release page](https://github.com/Vinc3r/BlenderScripts/releases/) for that.
 
 ## Installation
 
