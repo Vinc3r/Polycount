@@ -32,14 +32,23 @@ By default, tools are apply on current selection.
 - **Select** allow to quickly switch active UV. Usefull when you're in Material shading viewport, or when set render list in Baketool plugin.
 - **Rename UV channels** rename UV1 to *UVMap* and UV2 to*UV2*. Usefull when importing meshes from other 3D softwares.
 
+<img src="https://raw.githubusercontent.com/Vinc3r/BlenderScripts/master/_readmeAssets_/demo-UV-chans.gif" height="280">
+
 ### *Materials* part
 
 #### Blender Render
 
 - **Diffuse intensity** set diffuse intensity to 1, next button set color to white, next reset alpha params, next set specular to black and its intensity to 1
+
+<img src="https://raw.githubusercontent.com/Vinc3r/BlenderScripts/master/_readmeAssets_/demo-reset-mtl.gif" height="280">
+
 - The two buttons below helps to set diffuse or ambient textures as TexFace (user have to set himself viewport shading to *Textured Solid*)
+
+<img src="https://raw.githubusercontent.com/Vinc3r/BlenderScripts/master/_readmeAssets_/demo-texface.gif" height="280">
 
 ### *Stats* part
 
 - show **polycount** as vertices & triangles. Add **±** when nGons are found.
 - clicking on the object name make him active.
+
+<img src="https://raw.githubusercontent.com/Vinc3r/BlenderScripts/master/_readmeAssets_/demo-stats.gif" height="280">
