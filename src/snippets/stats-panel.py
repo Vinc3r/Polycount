@@ -34,7 +34,7 @@ def Nthg3DMeshStats():
         # generate table
         currentMeshStats = [element.name, len(element.data.vertices), triCount, hasNGon]
         meshesStats.append(currentMeshStats)
-        totalStats = [totalTriInSelection, totalVertsInSelection]
+        totalStats = [totalVertsInSelection, totalTriInSelection]
     return meshesStats, totalStats
 
 class NthgMakeObjectActive(bpy.types.Operator):
