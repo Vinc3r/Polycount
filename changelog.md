@@ -1,3 +1,11 @@
+## v0.2.1
+
+2018-03-18
+
+#### Stats
+
+- avoid console error when no object is selected
+
 ## v0.2.0
 
 2018-03-18

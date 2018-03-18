@@ -6,7 +6,7 @@ bl_info = {
     "category": "3D View",	
     "wiki_url": 'https://github.com/Vinc3r/BlenderScripts',
     "tracker_url": 'https://github.com/Vinc3r/BlenderScripts/issues',
-    "version": (0, 2, 0),
+    "version": (0, 2, 1),
 }
 
 #Thanks for some examples or pieces of code from Wazou, Pistiwique, Alexander Milovsky, all Blender community and of course Blender devs.
@@ -190,7 +190,8 @@ def Nthg3DMeshStats():
     
     totalTriInSelection = 0
     totalVertsInSelection = 0
-    meshesStats = []    
+    meshesStats = []
+    totalStats = 0
     
     # test only selected meshes
     selectedMeshes = [o for o in bpy.context.selected_objects if o.type == 'MESH']
@@ -283,27 +284,32 @@ class Nthg3DStatsPanel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
                 
-        statsTable, totalStats = Nthg3DMeshStats()
+        statsTable, totalStatsTable = Nthg3DMeshStats()
         
         box = layout.box()
         row = box.row(align = True)
         row.label(text = "Object")
         row.label(text = "Verts")
         row.label(text = "Tris")
-        for obj in statsTable:
-            row = box.row(align = True)
-            row.operator("nothing3d.make_object_active", text=str(obj[0]), emboss=False).mesh_to_select = obj[0]
-            row.label(text = str(obj[1]))
-            if not obj[3]:
-                row.label(text = str(obj[2]))
-            else:
-                # visual indicator if ngon
-                row.label(text = "± %i" % (obj[2]))
+        if statsTable is not None:
+            for obj in statsTable:
+                row = box.row(align = True)
+                row.operator("nothing3d.make_object_active", text=str(obj[0]), emboss=False).mesh_to_select = obj[0]
+                row.label(text = str(obj[1]))
+                if not obj[3]:
+                    row.label(text = str(obj[2]))
+                else:
+                    # visual indicator if ngon
+                    row.label(text = "± %i" % (obj[2]))
         # show total stats
         row = box.row(align = True)
         row.label(text = "TOTAL")
-        row.label(text = "%i" % (totalStats[0]))
-        row.label(text = "%i" % (totalStats[1]))     
+        if totalStatsTable != 0:
+            row.label(text = "%i" % (totalStatsTable[0]))
+            row.label(text = "%i" % (totalStatsTable[1]))
+        else:
+            row.label(text = "-")        
+            row.label(text = "-")        
 
 def register():
     bpy.utils.register_module(__name__)
