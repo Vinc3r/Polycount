@@ -16,6 +16,7 @@ Download or update the addon from the [release page](https://github.com/Vinc3r/B
 ## Installation
 
 * download [nothing-is-3d tools](https://github.com/Vinc3r/BlenderScripts/releases/)
+* in Blender go to *File* > *User Preferences* > *Add-ons* Tab
 * remove previous installation if needed (search *nothing* to easily find it)
 * install by using *Install from File...* in *Blender User Preferences* > *Add-ons* tab
 
