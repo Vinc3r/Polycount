@@ -7,13 +7,22 @@ Download or update the addon from the [release page](https://github.com/Vinc3r/B
 
 ![nothing-is-3d_tools_default](https://raw.githubusercontent.com/Vinc3r/BlenderScripts/master/_readmeAssets_/nothing-is-3d-tools_default.png)
 
-## Main Features
+**Table of content**
+
+1. <a href="#main-features">Main Features</a>
+2. <a href="#installation">Installation</a>
+3. <a href="#usage">Usage</a>
+    1. <a href="#usage-meshes">Meshes part</a>  
+    2. <a href="#usage-materials">Materials part</a>  
+    3. <a href="#usage-stats">Stats part</a>
+
+## [Main Features](#main-features)
 
 - quickly switch between UV1 & UV2
 - clean FBX import
 - keep informed about objects polycount
 
-## Installation
+## [Installation](#installation)
 
 * download [nothing-is-3d tools](https://github.com/Vinc3r/BlenderScripts/releases/)
 * in Blender go to *File* > *User Preferences* > *Add-ons* Tab
@@ -22,11 +31,11 @@ Download or update the addon from the [release page](https://github.com/Vinc3r/B
 
 Tools will be placed on Tools panel of 3DView, in *Nthg is 3D* tab.
 
-## Usage
+## [Usage](#usage)
 
-By default, tools are apply on current selection.
+By default, tools are applied on the current objects selection.
 
-### *Meshes* part
+### [*Meshes* part](#usage-meshes)
 
 #### UV channels
 
@@ -35,7 +44,7 @@ By default, tools are apply on current selection.
 
 <img src="https://raw.githubusercontent.com/Vinc3r/BlenderScripts/master/_readmeAssets_/demo-UV-chans.gif" height="280">
 
-### *Materials* part
+### [*Materials* part](#usage-materials)
 
 #### Blender Render
 
@@ -47,7 +56,7 @@ By default, tools are apply on current selection.
 
 <img src="https://raw.githubusercontent.com/Vinc3r/BlenderScripts/master/_readmeAssets_/demo-texface.gif" height="280">
 
-### *Stats* part
+### [*Stats* part](#usage-stats)
 
 - show **polycount** as vertices & triangles. Add **±** when nGons are found.
 - clicking on the object name make him active.
