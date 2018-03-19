@@ -9,7 +9,12 @@ bl_info = {
     "version": (0, 2, 1),
 }
 
-#Thanks for some examples or pieces of code from Wazou, Pistiwique, Alexander Milovsky, all Blender community and of course Blender devs.
+"""A bunch of Thanks for some snippets, ideas, inspirations, to:
+    - of course, Ton & all Blender devs,
+    - Henri Hebeisen (henri-hebeisen.com), Pitiwazou (pitiwazou.com), Pistiwique (github.com/pistiwique), Alexander Milovsky,
+    - and finally all Blender community and the ones I forget.
+"""
+
 import bpy
 
 print("++++ nothing-is-3D tools loaded ++++")
