@@ -15,12 +15,16 @@ Download or update the addon from the [release page](https://github.com/Vinc3r/B
     1. <a href="#usage-meshes">Meshes part</a>  
     2. <a href="#usage-materials">Materials part</a>  
     3. <a href="#usage-stats">Stats part</a>
+    
+---
 
 ## [Main Features](#main-features)
 
 - quickly switch between UV1 & UV2
 - clean FBX import
 - keep informed about objects polycount
+
+---
 
 ## [Installation](#installation)
 
@@ -30,6 +34,8 @@ Download or update the addon from the [release page](https://github.com/Vinc3r/B
 * install by using *Install from File...* in *Blender User Preferences* > *Add-ons* tab
 
 Tools will be placed on Tools panel of 3DView, in *Nthg is 3D* tab.
+
+---
 
 ## [Usage](#usage)
 
