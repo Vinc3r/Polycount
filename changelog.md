@@ -6,6 +6,8 @@
 
 - avoid console error when no object is selected
 
+---
+
 ## v0.2.0
 
 *18 March 2018*
@@ -20,11 +22,15 @@
 - add *diffuse/lightmap to texface* functionnality
 - add *set spec to black*
 
+---
+
 ## v0.0.2
 
 *07 June 2017*
 
 - show total stats
+
+---
 
 ## v0.0.1
 
