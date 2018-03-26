@@ -1,14 +1,14 @@
 ## v0.2.1
 
-2018-03-18
+*18 March 2018*
 
-#### Stats
+### Stats
 
 - avoid console error when no object is selected
 
 ## v0.2.0
 
-2018-03-18
+*18 March 2018*
 
 ### Misc
 
@@ -22,12 +22,12 @@
 
 ## v0.0.2
 
-2017-06-07
+*07 June 2017*
 
 - show total stats
 
 ## v0.0.1
 
-2017-06-06
+*06 June 2017*
 
 - adding mesh selection stats (verts & tri)
