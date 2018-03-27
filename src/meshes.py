@@ -1,7 +1,5 @@
 import bpy
 
-objectSelection = [o for o in bpy.context.selected_objects if o.type == 'MESH']
-
 def renameUVChannels(objectSelection):
     for obj in objectSelection:
         if len(obj.data.uv_textures) > 0 :
@@ -11,4 +9,4 @@ def renameUVChannels(objectSelection):
     return {'FINISHED'}
         
 if __name__ == "__main__":
-    renameUVChannels(objectSelection)
+    renameUVChannels([o for o in bpy.context.selected_objects if o.type == 'MESH'])

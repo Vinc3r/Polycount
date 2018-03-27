@@ -19,13 +19,19 @@ import bpy
 
 print("++++ nothing-is-3D tools loaded ++++")
 
+nthg3D_prefix = "nthg3D:"
+
 # from https://wiki.blender.org/index.php/Dev:Py/Scripts/Cookbook/Code_snippets/Multi-File_packages
 if "bpy" in locals():
     from importlib import reload
     if "meshes" in locals():
         reload(meshes)
+    print("{} Reloaded multifiles".format(nthg3D_prefix))
+else:
+    from . import meshes
+    print("Imported multifiles")
         
-class Nthg3DMeshPanel(bpy.types.Panel):
+class MeshPanel(bpy.types.Panel):
     bl_label = "Meshes"
     bl_space_type = "VIEW_3D"
     bl_region_type = "TOOLS"
@@ -40,7 +46,16 @@ class Nthg3DMeshPanel(bpy.types.Panel):
         UVchanBox.label(text = "UV channels :")
         
         row = UVchanBox.row()
-        row.operator("meshes.renameUVChannels", text = "Rename UV channels")
+        row.operator("nothing3d.meshButtons", text = "Rename UV channels").action = "renameUV"
+        
+class OBJECT_OT_MeshButtons(bpy.types.Operator):
+    bl_idname = "nothing3d.meshButtons"
+    bl_label = "Add mesh panel buttons"
+    action = bpy.props.StringProperty()
+    
+    def execute(self, context):
+        if self.action == "renameUV":
+            meshes.renameUVChannels([o for o in bpy.context.selected_objects if o.type == 'MESH'])
         
 def register():
     bpy.utils.register_module(__name__)
