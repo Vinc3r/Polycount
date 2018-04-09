@@ -41,6 +41,10 @@ class MeshPanel(bpy.types.Panel):
         UVchanBox = layout.box()
         UVchanBox.label(text = "UV channels :")
         
+        row = UVchanBox.row(align = True)
+        row.label(text = "Select UV")
+        row.operator("nothing3d.mesh_buttons", text = "1").action = "selectUV1"
+        row.operator("nothing3d.mesh_buttons", text = "2").action = "selectUV2"
         row = UVchanBox.row()
         row.operator("nothing3d.mesh_buttons", text = "Rename channels").action = "renameUV"
         
@@ -53,6 +57,10 @@ class NTHG3D_OT_MeshButtons(bpy.types.Operator):
     def execute(self, context):
         if self.action == "renameUV":
             meshes.renameUVChannels([o for o in bpy.context.selected_objects if o.type == 'MESH'])
+        if self.action == "selectUV1":
+            meshes.selectUVChannels([o for o in bpy.context.selected_objects if o.type == 'MESH'], 0)
+        if self.action == "selectUV2":
+            meshes.selectUVChannels([o for o in bpy.context.selected_objects if o.type == 'MESH'], 1)
         return{'FINISHED'}
         
 def register():
