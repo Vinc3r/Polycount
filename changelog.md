@@ -3,7 +3,7 @@
 
 **Table of content**
 
-1. <a href="#last-v">Last releaset</a>
+1. <a href="#last-v">Last release</a>
 2. <a href="#in-dev">in development</a>
 
 ---
