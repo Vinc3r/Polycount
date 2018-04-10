@@ -3,7 +3,8 @@
 A Blender add-on needed to work faster, often oriented 3D realtime workflow.
 
 Download or update the addon from the [release page](https://github.com/Vinc3r/BlenderScripts/releases/) or through the *zip* above.
-[changelog](https://github.com/Vinc3r/BlenderScripts/blob/master/changelog.md)
+
+Changelog [available here](https://github.com/Vinc3r/BlenderScripts/blob/master/changelog.md).
 
 ![nothing-is-3d_tools_default](https://raw.githubusercontent.com/Vinc3r/BlenderScripts/master/_readmeAssets_/nothing-is-3d-tools_default.png)
 
