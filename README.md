@@ -1,11 +1,15 @@
 # Nothing-is-3D Tools
 
-Some little scripts needed to work faster, often oriented 3D realtime workflow.
+A Blender add-on needed to work faster, often oriented 3D realtime workflow.
 
-Download or update the addon from the [release page](https://github.com/Vinc3r/BlenderScripts/releases/) or though the *zip* above.
+Download or update the addon from the [release page](https://github.com/Vinc3r/BlenderScripts/releases/) or through the *zip* above.
 [changelog](https://github.com/Vinc3r/BlenderScripts/blob/master/changelog.md)
 
 ![nothing-is-3d_tools_default](https://raw.githubusercontent.com/Vinc3r/BlenderScripts/master/_readmeAssets_/nothing-is-3d-tools_default.png)
+
+You can also find some [snippets](https://github.com/Vinc3r/BlenderScripts/tree/master/snippets), supposed to be merged on the main add-on later (and then deleted), or not.
+
+You can make feedbacks by creating a github issue here, or contact me through [my website](https://www.nothing-is-3d.com/contact) or even [Twitter](https://twitter.com/Vinc3r).
 
 **Table of content**
 
@@ -41,6 +45,8 @@ Tools will be placed on Tools panel of 3DView, in *Nthg is 3D* tab.
 
 By default, tools are applied on the current objects selection.
 
+---
+
 ### [*Meshes* part](#usage-meshes)
 
 #### UV channels
@@ -49,6 +55,8 @@ By default, tools are applied on the current objects selection.
 - **Rename UV channels** rename UV1 to *UVMap* and UV2 to*UV2*. Usefull when importing meshes from other 3D softwares.
 
 <img src="https://raw.githubusercontent.com/Vinc3r/BlenderScripts/master/_readmeAssets_/demo-UV-chans.gif" height="280">
+
+---
 
 ### [*Materials* part](#usage-materials)
 
