@@ -8,7 +8,7 @@
 
 ---
 
-## [v0.2.1](last-v)
+## [v0.2.1](#last-v)
 
 *18 March 2018* - *tested on Blender 2.79*
 
@@ -51,7 +51,7 @@
 ---
 ---
 
-## [in development](in-dev)
+## [in development](#in-dev)
 
 *and so, [not yet](https://github.com/Vinc3r/BlenderScripts/tree/master/src) officially released*
 
