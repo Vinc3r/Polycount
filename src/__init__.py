@@ -11,7 +11,7 @@ bl_info = {
 
 """A bunch of Thanks for some snippets, ideas, inspirations, to:
     - of course, Ton & all Blender devs,
-    - Henri Hebeisen (henri-hebeisen.com), Pitiwazou (pitiwazou.com), Pistiwique (github.com/pistiwique), Alexander Milovsky,
+    - Henri Hebeisen (henri-hebeisen.com), Pitiwazou (pitiwazou.com), Pistiwique (github.com/pistiwique),
     - and finally all Blender community and the ones I forget.
 """
 
@@ -21,10 +21,12 @@ if "bpy" in locals():
     if "meshes" in locals():
         reload(meshes)
     if "materials_bi" in locals():
-        reload(meshes)
+        reload(materials_bi)
+    if "commons" in locals():
+        reload(selection_sets)
     print("addOn Nothing-is-3D tools reloaded")
 else:
-    from . import meshes, materials_bi
+    from . import meshes, materials_bi, selection_sets
     print("addOn Nothing-is-3D tools imported")
 
 import bpy
@@ -46,11 +48,13 @@ class NTHG3D_PT_material_bi_panel(bpy.types.Panel):
         fbxCleanerBox.label(text="FBX cleaner:")
         row = fbxCleanerBox.row(align=True)
         row.operator("nothing3d.mtl_bi_buttons",
-                     text="intensity", icon="ANTIALIASED").action = "resetIntensity"
+                     text="intensity", icon="ANTIALIASED").action = "reset_intensity"
         row.operator("nothing3d.mtl_bi_buttons",
-                     text="color", icon="MATSPHERE").action = "resetColor"
+                     text="color", icon="MATSPHERE").action = "reset_color"
         row.operator("nothing3d.mtl_bi_buttons",
-                     text="spec", icon="MESH_CIRCLE").action = "resetSpec"
+                     text="spec", icon="MESH_CIRCLE").action = "reset_spec"
+        row.operator("nothing3d.mtl_bi_buttons",
+                     text="alpha", icon="IMAGE_RGB_ALPHA").action = "reset_alpha"
 
 
 class NTHG3D_PT_mesh_panel(bpy.types.Panel):
@@ -64,12 +68,16 @@ class NTHG3D_PT_mesh_panel(bpy.types.Panel):
         UVchanBox = layout.box()
         UVchanBox.label(text="UV channels :")
         row = UVchanBox.row(align=True)
-        row.label(text="Select UV:")
-        row.operator("nothing3d.mesh_buttons", text="1").action = "selectUV1"
-        row.operator("nothing3d.mesh_buttons", text="2").action = "selectUV2"
+        row.label(text="Activate UV:")
+        row.operator("nothing3d.mesh_buttons", text="1").action = "select_UV1"
+        row.operator("nothing3d.mesh_buttons", text="2").action = "select_UV2"
         row = UVchanBox.row()
         row.operator("nothing3d.mesh_buttons",
-                     text="Rename channels").action = "renameUV"
+                     text="Rename channels").action = "rename_UV"
+        row = UVchanBox.row()
+        row.operator("nothing3d.mesh_buttons",
+                     text="TEST").action = "TEST"
+
 
 
 class NTHG3D_OT_mesh_buttons(bpy.types.Operator):
@@ -79,15 +87,14 @@ class NTHG3D_OT_mesh_buttons(bpy.types.Operator):
     action = bpy.props.StringProperty()
 
     def execute(self, context):
-        if self.action == "renameUV":
-            meshes.renameUVChannels(
-                [o for o in bpy.context.selected_objects if o.type == 'MESH'])
-        if self.action == "selectUV1":
-            meshes.selectUVChannels(
-                [o for o in bpy.context.selected_objects if o.type == 'MESH'], 0)
-        if self.action == "selectUV2":
-            meshes.selectUVChannels(
-                [o for o in bpy.context.selected_objects if o.type == 'MESH'], 1)
+        if self.action == "rename_UV":
+            meshes.rename_UV_channels()
+        if self.action == "select_UV1":
+            meshes.activate_UV_channels(0)
+        if self.action == "select_UV2":
+            meshes.activate_UV_channels(1)
+        if self.action == "TEST":
+            meshes.test()
         return{'FINISHED'}
 
 
@@ -98,15 +105,14 @@ class NTHG3D_OT_material_bi_buttons(bpy.types.Operator):
     action = bpy.props.StringProperty()
 
     def execute(self, context):
-        if self.action == "resetIntensity":
-            materials_bi.resetIntensity(
-                [o for o in bpy.context.selected_objects if o.type == 'MESH'])
-        if self.action == "resetColor":
-            materials_bi.resetColorValue(
-                [o for o in bpy.context.selected_objects if o.type == 'MESH'])
-        if self.action == "resetSpec":
-            materials_bi.resetSpecValue(
-                [o for o in bpy.context.selected_objects if o.type == 'MESH'])
+        if self.action == "reset_intensity":
+            materials_bi.reset_intensity()
+        if self.action == "reset_color":
+            materials_bi.reset_color_value()
+        if self.action == "reset_spec":
+            materials_bi.reset_spec_value()
+        if self.action == "reset_alpha":
+            materials_bi.reset_alpha_value()
         return{'FINISHED'}
 
 

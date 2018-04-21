@@ -1,39 +1,3 @@
-bl_info = {
-    "name": "Nothing-is-3D tools",
-    "description": "Some scripts 3D realtime workflow oriented.",
-    "author": "Vincent (V!nc3r) Lamy, nothing-is-3d.com",
-    "location": "3D view toolshelf > Nthg-is-3D tab",
-    "category": "3D View",
-    "wiki_url": 'https://github.com/Vinc3r/BlenderScripts',
-    "tracker_url": 'https://github.com/Vinc3r/BlenderScripts/issues',
-    "version": (0, 2, 1),
-}
-
-"""A bunch of Thanks for some snippets, ideas, inspirations, to:
-    - of course, Ton & all Blender devs,
-    - Henri Hebeisen (henri-hebeisen.com), Pitiwazou (pitiwazou.com), Pistiwique (github.com/pistiwique), Alexander Milovsky,
-    - and finally all Blender community and the ones I forget.
-"""
-
-import bpy
-
-print("++++ nothing-is-3D tools loaded ++++")
-
-
-
-class BImtlResetAlpha(bpy.types.Operator):
-    """Reset transparency parameters"""
-    bl_idname = "nothing3d.bi_mtl_reset_alpha"
-    bl_label = "Reset transparency parameters"
-
-    def execute(self, context):
-        for obj in context.selected_objects:
-            if obj.type == 'MESH' and len(obj.data.materials) > 0 :
-                for mat in obj.data.materials:
-                    mat.transparency_method = 'Z_TRANSPARENCY'
-                    mat.alpha = 1
-                    mat.use_transparency = False
-        return {'FINISHED'}
 
 class BImtlTexSolid(bpy.types.Operator):
     """Set diffuse texture on Textured Solid"""
