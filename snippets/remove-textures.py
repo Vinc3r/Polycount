@@ -5,6 +5,8 @@ D = bpy.data
 
 pattern = ".LM"
 
+print("+++ remove texture files +++")
+
 for img in D.images:
     if pattern in img.name:
         print("removed file "+str(img.name))
