@@ -18,5 +18,5 @@ for img in D.images:
 
 # check in the console what's rest to fix
 for img in D.images:
-    if not img.filepath.startswith(correctPath):
-        print(img.filepath)
+    if not img.filepath.startswith(correctPath):        
+        print("wrong path: {} {}".format(img.name, img.filepath))
