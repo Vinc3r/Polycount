@@ -9,7 +9,7 @@ D = bpy.data
 """
 
 wrongPath = r"\\my-wrong-path"
-correctPath = r"A:\my-right-path"
+correctPath = r"//textures"
 
 print("+++ path correction +++")
 
