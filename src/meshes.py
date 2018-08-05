@@ -17,16 +17,21 @@ def rename_UV_channels():
 
 
 def activate_UV_channels(uv_chan):
-    objects_list = commons.get_meshes_in_selection()
+    objects_list = selection_sets.meshes_in_selection()
     for obj in objects_list:
+        if not obj.data.uv_textures:
+            print("{} has no UV".format(obj.name))
+            continue
         if len(obj.data.uv_textures) < uv_chan:
             print("{} has no UV{}".format(obj.name, (uv_chan + 1)))
             continue
         obj.data.uv_textures[uv_chan].active = True
     return {'FINISHED'}
 
-def test():
-    print(selection_sets.meshes_without_uv())
+def report_no_UV_meshes():
+    objects_list = selection_sets.meshes_without_uv()
+    for obj in objects_list:
+        print(obj.name)
 
 if __name__ == "__main__":
     rename_UV_channels()

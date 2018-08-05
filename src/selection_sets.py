@@ -8,9 +8,10 @@ def meshes_without_uv():
     objects_list = meshes_in_selection()
     objects_without_uv = []
     for obj in objects_list:
-        if not obj.data.uv_textures:
+        if obj.data.uv_textures:
             continue
-        objects_without_uv.append(obj)
+        if not obj.data.uv_textures:
+            objects_without_uv.append(obj)
     return objects_without_uv
 
 def meshes_with_materials():
