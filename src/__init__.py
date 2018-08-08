@@ -30,9 +30,11 @@ else:
     print("addOn Nothing-is-3D tools imported")
 
 import bpy
+from bpy.props import BoolProperty, IntProperty, EnumProperty, StringProperty
 
 
-class NTHG3D_PT_material_bi_panel(bpy.types.Panel):
+class NTHG3D_PT_MaterialBIPanel(bpy.types.Panel):
+    bl_idname = "nothing3d.material_bi_panel"
     bl_label = "Materials"
     bl_space_type = "VIEW_3D"
     bl_region_type = "TOOLS"
@@ -57,7 +59,7 @@ class NTHG3D_PT_material_bi_panel(bpy.types.Panel):
                      text="alpha", icon="IMAGE_RGB_ALPHA").action = "reset_alpha"
 
 
-class NTHG3D_PT_mesh_panel(bpy.types.Panel):
+class NTHG3D_PT_MeshPanel(bpy.types.Panel):
     bl_label = "Meshes"
     bl_space_type = "VIEW_3D"
     bl_region_type = "TOOLS"
@@ -80,7 +82,7 @@ class NTHG3D_PT_mesh_panel(bpy.types.Panel):
 
 
 
-class NTHG3D_OT_mesh_buttons(bpy.types.Operator):
+class NTHG3D_OT_MeshButtons(bpy.types.Operator):
     # note: no uppercase char in idname, use _ instead!
     bl_idname = "nothing3d.mesh_buttons"
     bl_label = "Add mesh panel buttons"
@@ -98,7 +100,7 @@ class NTHG3D_OT_mesh_buttons(bpy.types.Operator):
         return{'FINISHED'}
 
 
-class NTHG3D_OT_material_bi_buttons(bpy.types.Operator):
+class NTHG3D_OT_MaterialBIButtons(bpy.types.Operator):
     # note: no uppercase char in idname, use _ instead!
     bl_idname = "nothing3d.mtl_bi_buttons"
     bl_label = "Add material Blender Internal panel buttons"
