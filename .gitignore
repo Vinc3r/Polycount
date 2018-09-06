@@ -5,3 +5,4 @@ Thumbs.db
 .idea
 *.ffs_db
 .directory
+*__pycache__*
