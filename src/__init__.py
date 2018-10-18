@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Nothing-is-3D tools",
     "description": "Some scripts 3D realtime workflow oriented.",
-    "author": "Vincent (V!nc3r) Lamy, nothing-is-3d.com",
+    "author": "Vincent (V!nc3r) Lamy / nothing-is-3d.com",
     "location": "3D view toolshelf > Nthg-is-3D tab",
     "category": "3D View",
     "wiki_url": 'https://github.com/Vinc3r/BlenderScripts',
@@ -42,12 +42,12 @@ class NTHG3D_PT_MaterialBIPanel(bpy.types.Panel):
 
     @classmethod
     def poll(cls, context):
-        return bpy.context.scene.render.engine == "BLENDER_RENDER"
+        return bpy.context.scene.render.engine == "BLENDER_RENDER" or bpy.context.scene.render.engine == "BLENDER_GAME"
 
     def draw(self, context):
         layout = self.layout
         fbxCleanerBox = layout.box()
-        fbxCleanerBox.label(text="FBX cleaner:")
+        fbxCleanerBox.label(text="Import cleaner:")
         row = fbxCleanerBox.row(align=True)
         row.operator("nothing3d.mtl_bi_buttons",
                      text="intensity", icon="ANTIALIASED").action = "reset_intensity"
@@ -70,17 +70,22 @@ class NTHG3D_PT_MeshPanel(bpy.types.Panel):
         UVchanBox = layout.box()
         UVchanBox.label(text="UV channels :")
         row = UVchanBox.row(align=True)
-        row.label(text="Activate UV:")
+        row.label(text="Select:")
         row.operator("nothing3d.mesh_buttons", text="1").action = "select_UV1"
         row.operator("nothing3d.mesh_buttons", text="2").action = "select_UV2"
         row = UVchanBox.row()
         row.operator("nothing3d.mesh_buttons",
                      text="Rename channels").action = "rename_UV"
-        row = UVchanBox.row()
-        row.operator("nothing3d.mesh_buttons",
-                     text="TEST").action = "TEST"
 
+class NTHG3D_PT_StatsPanel(bpy.types.Panel):
+    bl_label = "Stats"
+    bl_space_type = "PROPERTIES"
+    bl_region_type = "WINDOW"
+    bl_context = "scene"
 
+    def draw(self, context):
+        layout = self.layout
+        layout.label(text="test test")
 
 class NTHG3D_OT_MeshButtons(bpy.types.Operator):
     # note: no uppercase char in idname, use _ instead!
@@ -95,8 +100,6 @@ class NTHG3D_OT_MeshButtons(bpy.types.Operator):
             meshes.activate_UV_channels(0)
         if self.action == "select_UV2":
             meshes.activate_UV_channels(1)
-        if self.action == "TEST":
-            meshes.test()
         return{'FINISHED'}
 
 

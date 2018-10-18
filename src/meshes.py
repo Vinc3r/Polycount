@@ -1,7 +1,6 @@
 import bpy
 from . import selection_sets
 
-
 def rename_UV_channels():
     objects_list = selection_sets.meshes_in_selection()
     for obj in objects_list:
