@@ -87,15 +87,22 @@ class NTHG3D_PT_StatsPanel(bpy.types.Panel):
     bl_context = "scene"
 
     def draw(self, context):
+        scene = context.scene
         layout = self.layout
-        layout.label(text="test test")
         row = layout.row()
-        row.operator("nothing3d.stats_buttons", text="enable").action = "test"
-        if not bpy.context.scene.stats_enabled:
-            layout.label(text="yep yep yep")
-        else:
-            layout.label(text="nope nope nope")
 
+        if scene.stats_enabled == True:
+            row.operator("nothing3d.stats_buttons", text="Disable")
+        else:
+            row.operator("nothing3d.stats_buttons", text="Enable")
+
+class NTHG3D_OT_StatsPanel(bpy.types.Operator):
+    bl_idname = "nothing3d.stats_buttons"
+    bl_label = "Toogle stats panel"
+
+    def execute(self, context):
+        context.scene.stats_enabled = not context.scene.stats_enabled
+        return{'FINISHED'}
 
 class NTHG3D_OT_MeshButtons(bpy.types.Operator):
     # note: no uppercase char in idname, use _ instead!
@@ -130,31 +137,13 @@ class NTHG3D_OT_MaterialBIButtons(bpy.types.Operator):
             materials_bi.reset_alpha_value()
         return{'FINISHED'}
 
-class NTHG3D_OT_StatshButtons(bpy.types.Operator):
-    # note: no uppercase char in idname, use _ instead!
-    bl_idname = "nothing3d.stats_buttons"
-    bl_label = "Add stats panel buttons"
-    action = bpy.props.StringProperty()
-
-    def execute(self, context):
-        if self.action == "test":
-            stats.test()
-        return{'FINISHED'}
-
-
 def register():
     bpy.utils.register_module(__name__)
-
-    bpy.types.Scene.stats_enabled = BoolProperty(
-        name='Stats asked',
-        default=False
-    )
-
+    bpy.types.Scene.stats_enabled = bpy.props.BoolProperty(default=False)
 
 def unregister():
     bpy.utils.unregister_module(__name__)
     del bpy.types.Scene.stats_enabled
-
 
 if __name__ == "__main__":
     register()
