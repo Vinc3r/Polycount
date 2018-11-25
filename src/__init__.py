@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Nothing-is-3D tools",
     "description": "Some scripts 3D realtime workflow oriented.",
-    "author": "Vincent (V!nc3r) Lamy / nothing-is-3d.com",
+    "author": "Vincent (V!nc3r) Lamy",
     "location": "3D view toolshelf > Nthg-is-3D tab",
     "category": "3D View",
     "wiki_url": 'https://github.com/Vinc3r/BlenderScripts',
@@ -61,6 +61,24 @@ class NTHG3D_PT_MaterialBIPanel(bpy.types.Panel):
                      text="alpha", icon="IMAGE_RGB_ALPHA").action = "reset_alpha"
 
 
+class NTHG3D_OT_MaterialBIButtons(bpy.types.Operator):
+    # note: no uppercase char in idname, use _ instead!
+    bl_idname = "nothing3d.mtl_bi_buttons"
+    bl_label = "Add material Blender Internal panel buttons"
+    action = bpy.props.StringProperty()
+
+    def execute(self, context):
+        if self.action == "reset_intensity":
+            materials_bi.reset_intensity()
+        if self.action == "reset_color":
+            materials_bi.reset_color_value()
+        if self.action == "reset_spec":
+            materials_bi.reset_spec_value()
+        if self.action == "reset_alpha":
+            materials_bi.reset_alpha_value()
+        return{'FINISHED'}
+
+
 class NTHG3D_PT_MeshPanel(bpy.types.Panel):
     bl_label = "Meshes"
     bl_space_type = "VIEW_3D"
@@ -80,30 +98,6 @@ class NTHG3D_PT_MeshPanel(bpy.types.Panel):
                      text="Rename channels").action = "rename_UV"
 
 
-class NTHG3D_PT_StatsPanel(bpy.types.Panel):
-    bl_label = "Stats"
-    bl_space_type = "PROPERTIES"
-    bl_region_type = "WINDOW"
-    bl_context = "scene"
-
-    def draw(self, context):
-        scene = context.scene
-        layout = self.layout
-        row = layout.row()
-
-        if scene.stats_enabled == True:
-            row.operator("nothing3d.stats_buttons", text="Disable")
-        else:
-            row.operator("nothing3d.stats_buttons", text="Enable")
-
-class NTHG3D_OT_StatsPanel(bpy.types.Operator):
-    bl_idname = "nothing3d.stats_buttons"
-    bl_label = "Toogle stats panel"
-
-    def execute(self, context):
-        context.scene.stats_enabled = not context.scene.stats_enabled
-        return{'FINISHED'}
-
 class NTHG3D_OT_MeshButtons(bpy.types.Operator):
     # note: no uppercase char in idname, use _ instead!
     bl_idname = "nothing3d.mesh_buttons"
@@ -120,30 +114,79 @@ class NTHG3D_OT_MeshButtons(bpy.types.Operator):
         return{'FINISHED'}
 
 
-class NTHG3D_OT_MaterialBIButtons(bpy.types.Operator):
-    # note: no uppercase char in idname, use _ instead!
-    bl_idname = "nothing3d.mtl_bi_buttons"
-    bl_label = "Add material Blender Internal panel buttons"
-    action = bpy.props.StringProperty()
+class NTHG3D_PT_StatsPanel(bpy.types.Panel):
+    bl_label = "Stats"
+    bl_space_type = "PROPERTIES"
+    bl_region_type = "WINDOW"
+    bl_context = "scene"
+
+    def draw(self, context):
+        scene = context.scene
+        layout = self.layout
+        row = layout.row()
+
+        if scene.stats_enabled == True:
+            row.operator("nothing3d.stats_buttons",
+                         text="Enable").show_stats = False
+        else:
+            row.operator("nothing3d.stats_buttons",
+                         text="Disable").show_stats = True
+            statsTable, totalStatsTable = stats.calculate_mesh_stats()
+
+            box = layout.box()
+            row = box.row(align=True)
+            row.label(text="Object")
+            row.label(text="Verts")
+            row.label(text="Tris")
+            if statsTable is not None:
+                for obj in statsTable:
+                    print(obj[0])
+                    row = box.row(align=True)
+                    row.operator("nothing3d.stats_buttons", text=str(
+                        obj[0]), emboss=True).mesh_to_select = obj[0]
+                    row.label(text=str(obj[1]))
+                    if not obj[3]:
+                        row.label(text=str(obj[2]))
+                    else:
+                        # visual indicator if ngon
+                        row.label(text="± %i" % (obj[2]))
+            # show total stats
+            row = box.row(align=True)
+            row.label(text="TOTAL")
+            if totalStatsTable != 0:
+                row.label(text="%i" % (totalStatsTable[0]))
+                row.label(text="%i" % (totalStatsTable[1]))
+            else:
+                row.label(text="-")
+                row.label(text="-")
+
+
+class NTHG3D_OT_StatsPanel(bpy.types.Operator):
+    bl_idname = "nothing3d.stats_buttons"
+    bl_label = "Toogle stats panel"
+    mesh_to_select = bpy.props.StringProperty()
+    show_stats = bpy.props.BoolProperty()
 
     def execute(self, context):
-        if self.action == "reset_intensity":
-            materials_bi.reset_intensity()
-        if self.action == "reset_color":
-            materials_bi.reset_color_value()
-        if self.action == "reset_spec":
-            materials_bi.reset_spec_value()
-        if self.action == "reset_alpha":
-            materials_bi.reset_alpha_value()
+        if self.mesh_to_select is not "":
+            context.scene.objects.active = bpy.data.objects[str(
+                self.mesh_to_select)]
+        if self.show_stats:
+            context.scene.stats_enabled = True
+        else:
+            context.scene.stats_enabled = False
         return{'FINISHED'}
+
 
 def register():
     bpy.utils.register_module(__name__)
     bpy.types.Scene.stats_enabled = bpy.props.BoolProperty(default=False)
 
+
 def unregister():
     bpy.utils.unregister_module(__name__)
     del bpy.types.Scene.stats_enabled
+
 
 if __name__ == "__main__":
     register()

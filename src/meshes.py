@@ -1,6 +1,7 @@
 import bpy
 from . import selection_sets
 
+
 def rename_UV_channels():
     objects_list = selection_sets.meshes_in_selection()
     for obj in objects_list:
@@ -27,10 +28,12 @@ def activate_UV_channels(uv_chan):
         obj.data.uv_textures[uv_chan].active = True
     return {'FINISHED'}
 
+
 def report_no_UV_meshes():
     objects_list = selection_sets.meshes_without_uv()
     for obj in objects_list:
         print(obj.name)
+
 
 if __name__ == "__main__":
     rename_UV_channels()

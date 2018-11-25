@@ -26,6 +26,7 @@ def reset_spec_value():
             mat.specular_intensity = 1
     return {'FINISHED'}
 
+
 def reset_alpha_value():
     objects_list = selection_sets.meshes_with_materials()
     for obj in objects_list:
@@ -55,10 +56,10 @@ def use_textured_solid(self, context):
                 if self.set_texture_type == 0:
                     # check if : there is a texture, if it used diffuse channel, if it use uv coord, if mesh has an uv chan
                     if mat.texture_slots[texSlot] != None \
-                    and mat.texture_slots[texSlot].use_map_color_diffuse \
-                    and mat.texture_slots[texSlot].texture_coords == "UV" \
-                    and len(mesh.uv_textures) > 0 \
-                    and obj.data.uv_textures[self.set_texture_type] is not None:
+                            and mat.texture_slots[texSlot].use_map_color_diffuse \
+                            and mat.texture_slots[texSlot].texture_coords == "UV" \
+                            and len(mesh.uv_textures) > 0 \
+                            and obj.data.uv_textures[self.set_texture_type] is not None:
                         # select mesh first UV channel
                         mesh.uv_textures[0].active = True
                         # set active texture as diffuse texture
@@ -66,10 +67,10 @@ def use_textured_solid(self, context):
                 # lightmap mode
                 if self.set_texture_type == 1:
                     if mat.texture_slots[texSlot] != None \
-                    and mat.texture_slots[texSlot].use_map_ambient \
-                    and mat.texture_slots[texSlot].texture_coords == "UV" \
-                    and len(mesh.uv_textures) > 1 \
-                    and obj.data.uv_textures[self.set_texture_type] is not None:
+                            and mat.texture_slots[texSlot].use_map_ambient \
+                            and mat.texture_slots[texSlot].texture_coords == "UV" \
+                            and len(mesh.uv_textures) > 1 \
+                            and obj.data.uv_textures[self.set_texture_type] is not None:
                         # select mesh UV2 channel
                         mesh.uv_textures[1].active = True
                         # set active texture as ambient texture
@@ -82,17 +83,15 @@ def use_textured_solid(self, context):
                 img = mat.active_texture
                 # some check to sync active UVmap and images associate
                 if not is_editmode \
-                and img.type == "IMAGE" \
-                and (mat.texture_slots[texSlot].uv_layer == mesh.uv_layers.active.name
-                or mat.texture_slots[texSlot].uv_layer == ""):
+                    and img.type == "IMAGE" \
+                    and (mat.texture_slots[texSlot].uv_layer == mesh.uv_layers.active.name
+                         or mat.texture_slots[texSlot].uv_layer == ""):
                     # assign image according to material assignation
                     for f in mesh.polygons:
                         if f.material_index == matID:
                             uvtex.data[f.index].image = img.image
 
     return {'FINISHED'}
-
-
 
 
 if __name__ == "__main__":
