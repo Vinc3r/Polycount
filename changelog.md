@@ -1,14 +1,23 @@
 # Nothing-is-3D tools changelog
 
 
-**Table of content**
+## [v1.0.0](https://github.com/Vinc3r/BlenderScripts/releases/tag/v1.0.0)
 
-1. <a href="#last-v">Last release</a>
-2. <a href="#in-dev">in development</a>
+*25 november 2018* - *tested on Blender 2.79*
 
----
+### Misc
 
-## [v0.2.1](#last-v)
+- add-on is now a multi-file add-on (make future development easier)
+
+### Meshes
+
+- *Rename channels UV* now rename all UVs, not only UV1 & 2 (but still keep the default name UVMap for UV1 for convenience)
+
+### Stats
+
+- stats panel are now in Properties > Scene
+
+## [v0.2.1](https://github.com/Vinc3r/BlenderScripts/releases/tag/v0.2.1)
 
 *18 March 2018* - *tested on Blender 2.79*
 
@@ -16,9 +25,7 @@
 
 - avoid console error when no object is selected
 
----
-
-## v0.2.0
+## [v0.2.0](https://github.com/Vinc3r/BlenderScripts/releases/tag/v0.2.0)
 
 *18 March 2018*
 
@@ -32,15 +39,11 @@
 - add *diffuse/lightmap to texface* functionnality
 - add *set spec to black*
 
----
-
 ## v0.0.2
 
 *07 June 2017*
 
 - show total stats
-
----
 
 ## v0.0.1
 
@@ -48,17 +51,5 @@
 
 - adding mesh selection stats (verts & tri)
 
----
----
 
-## [in development](#in-dev)
 
-*and so, [not yet](https://github.com/Vinc3r/BlenderScripts/tree/master/src) officially released*
-
-### Misc
-
-- add-on is now a multi-file add-on
-
-### Meshes
-
-- *Rename channels UV* now rename all UVs, not only UV1 & 2 (but still keep the default name UVMap for UV1 for convenience)
