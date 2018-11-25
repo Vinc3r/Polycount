@@ -1,6 +1,6 @@
 # Nothing-is-3D Tools
 
-A Blender add-on needed to work faster, often oriented 3D realtime workflow.
+A Blender add-on made to work faster, often oriented 3D realtime workflow.
 
 - Download or update the addon from the [release page](https://github.com/Vinc3r/BlenderScripts/releases/).
 
