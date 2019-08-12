@@ -8,7 +8,7 @@ A Blender add-on made to work faster, often oriented 3D realtime workflow.
 
 - You can also find some [snippets](https://github.com/Vinc3r/BlenderScripts/tree/master/snippets), supposed to be merged on the main add-on later (and then deleted), or not.
 
-- You can make feedbacks by creating a github issue here, or contact me through [my website](https://www.nothing-is-3d.com/contact) or even [Twitter](https://twitter.com/Vinc3r).
+- You can make feedbacks by creating a [github issue](https://github.com/Vinc3r/BlenderScripts/issues), or contact me through [my website](https://www.nothing-is-3d.com/contact) or even [Twitter](https://twitter.com/Vinc3r).
 
 **Table of content**
 
