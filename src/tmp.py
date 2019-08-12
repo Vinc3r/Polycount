@@ -2,13 +2,14 @@ import bpy
 
 
 class HelloWorldPanel(bpy.types.Panel):
-    """Creates a Panel in the Object properties window"""
+    """Creates a Panel in the Sidebar"""
     bl_label = "Hello World Panel"
     bl_idname = "OBJECT_PT_hello"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_context = "object"
-
+    bl_category = 'Hello'
+    
+    
     def draw(self, context):
         layout = self.layout
 
@@ -19,8 +20,6 @@ class HelloWorldPanel(bpy.types.Panel):
 
         row = layout.row()
         row.label(text="Active object is: " + obj.name)
-        row = layout.row()
-        row.prop(obj, "name")
 
         row = layout.row()
         row.operator("mesh.primitive_cube_add")
