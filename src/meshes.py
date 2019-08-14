@@ -30,7 +30,7 @@ def activate_uv_channels(uv_chan):
     return {'FINISHED'}
 
 
-def report_no_uv(self):
+def report_no_uv(operator):
     objects_list = selection_sets.meshes_without_uv()
     obj_names: str = ""
     for obj in objects_list:
@@ -38,7 +38,7 @@ def report_no_uv(self):
         if objects_list.index(obj) < (len(objects_list) - 1):
             obj_names += ", "
     message = "no UV chan' on: {}".format(obj_names)
-    self.report({'WARNING'}, message)
+    operator.report({'WARNING'}, message)
 
 
 """
