@@ -2,39 +2,47 @@ import bpy
 from . import selection_sets
 
 
-def rename_UV_channels():
+def rename_uv_channels():
     objects_list = selection_sets.meshes_in_selection()
     for obj in objects_list:
-        if len(obj.data.uv_textures) < 0:
+        mesh = obj.data
+        if len(mesh.uv_layers) < 0:
             continue
-        for uv_chan in range(len(obj.data.uv_textures)):
+        for uv_chan in range(len(mesh.uv_layers)):
             if uv_chan == 0:
-                obj.data.uv_textures[0].name = "UVMap"
+                mesh.uv_layers[0].name = "UVMap"
             else:
-                obj.data.uv_textures[uv_chan].name = "UV{}".format(
-                    (uv_chan + 1))
+                mesh.uv_layers[uv_chan].name = "UV{}".format((uv_chan + 1))
     return {'FINISHED'}
 
 
-def activate_UV_channels(uv_chan):
+def activate_uv_channels(uv_chan):
     objects_list = selection_sets.meshes_in_selection()
     for obj in objects_list:
-        if not obj.data.uv_textures:
+        mesh = obj.data
+        if len(mesh.uv_layers) == 0:
             print("{} has no UV".format(obj.name))
             continue
-        if len(obj.data.uv_textures) < uv_chan:
+        if len(mesh.uv_layers) <= uv_chan:
             print("{} has no UV{}".format(obj.name, (uv_chan + 1)))
             continue
-        obj.data.uv_textures[uv_chan].active = True
+        obj.data.uv_layers[uv_chan].active = True
     return {'FINISHED'}
 
 
-def report_no_UV_meshes():
+def report_no_uv(self):
     objects_list = selection_sets.meshes_without_uv()
+    obj_names: str = ""
     for obj in objects_list:
-        print(obj.name)
+        obj_names += "{}".format(obj.name)
+        if objects_list.index(obj) < (len(objects_list) - 1):
+            obj_names += ", "
+    message = "no UV chan' on: {}".format(obj_names)
+    self.report({'WARNING'}, message)
 
 
+"""
 if __name__ == "__main__":
     rename_UV_channels()
     activate_UV_channels(1)
+"""

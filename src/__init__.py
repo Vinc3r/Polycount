@@ -2,7 +2,7 @@ bl_info = {
     "name": "Nothing-is-3D tools",
     "description": "Some scripts 3D realtime workflow oriented.",
     "author": "Vincent (V!nc3r) Lamy",
-    "category": "3D View",
+    "category": "Object",
     "wiki_url": 'https://github.com/Vinc3r/BlenderScripts',
     "tracker_url": 'https://github.com/Vinc3r/BlenderScripts/issues',
     "version": (1, 1, 0),
@@ -15,72 +15,83 @@ bl_info = {
     - and finally all Blender community and the ones I forget.
 """
 
+if "bpy" in locals():
+    print("---- DEBUG HELP LINE ----")
+    import importlib
+
+    importlib.reload(meshes)
+    importlib.reload(selection_sets)
+else:
+    from . import meshes, selection_sets
+
 import bpy
 from bpy.props import (
-    BoolProperty,
+    FloatVectorProperty,
     IntProperty,
-    EnumProperty,
+    BoolProperty,
     StringProperty,
+    FloatProperty,
+    EnumProperty,
 )
 
-if "bpy" in locals():
-    import importlib
-    if "meshes" in locals():
-        importlib.reload(meshes)
-    if "selection_sets" in locals():
-        importlib.reload(selection_sets)
-else:
-    from .meshes import *
-    from .selection_sets import *
 
 class NTHG3D_PT_mesh_panel(bpy.types.Panel):
     bl_label = "Meshes"
+    bl_idname = "NTHG3D_PT_mesh_panel"
     bl_space_type = "VIEW_3D"
-    bl_region_type = "TOOLS"
-    bl_category = "Nthg is 3D"
+    bl_region_type = "UI"
+    bl_category = "Nothing-is-3D"
 
     def draw(self, context):
         layout = self.layout
-        UVchanBox = layout.box()
-        UVchanBox.label(text="UV channels :")
-        row = UVchanBox.row(align=True)
-        row.label(text="Select:")
-        row.operator("nothing3d.mesh_buttons", text="1").action = "select_UV1"
-        row.operator("nothing3d.mesh_buttons", text="2").action = "select_UV2"
-        row = UVchanBox.row()
-        row.operator("nothing3d.mesh_buttons",
-                     text="Rename channels").action = "rename_UV"
+        row = layout.row()
+        # UV chan part
+        row.label(text="UV channels :")
+        box = layout.box()
+        row = box.row(align=True)
+        row.label(text="Active:")
+        row.operator("nothing3d.mesh_panel_buttons", text="1").action = "select_UV1"
+        row.operator("nothing3d.mesh_panel_buttons", text="2").action = "select_UV2"
+        row = box.row(align=True)
+        row.operator("nothing3d.mesh_panel_buttons", text="Rename channels").action = "rename_UV"
+        row = box.row(align=True)
+        row.operator("nothing3d.mesh_panel_buttons", text="Report no UV").action = "report_no_UV"
 
 
-class NTHG3D_OT_MeshButtons(bpy.types.Operator):
-    # note: no uppercase char in idname, use _ instead!
-    bl_idname = "nothing3d.mesh_buttons"
-    bl_label = "Add mesh panel buttons"
-    action = bpy.props.StringProperty()
+class NTHG3D_OT_mesh_panel_buttons(bpy.types.Operator):
+    bl_idname = "nothing3d.mesh_panel_buttons"
+    bl_label = "Buttons in meshes panel"
+    action: StringProperty()
 
     def execute(self, context):
         if self.action == "rename_UV":
-            meshes.rename_UV_channels()
+            meshes.rename_uv_channels()
         if self.action == "select_UV1":
-            meshes.activate_UV_channels(0)
+            meshes.activate_uv_channels(0)
         if self.action == "select_UV2":
-            meshes.activate_UV_channels(1)
-        return{'FINISHED'}
+            meshes.activate_uv_channels(1)
+        if self.action == "report_no_UV":
+            meshes.report_no_uv(self)
+        return {'FINISHED'}
+
 
 classes = (
-    NTHG3D_OT_MeshButtons,
-    NTHG3D_PT_MeshPanel,
+    NTHG3D_PT_mesh_panel,
+    NTHG3D_OT_mesh_panel_buttons,
 )
+
 
 def register():
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
 
+
 def unregister():
     from bpy.utils import unregister_class
     for cls in reversed(classes):
         unregister_class(cls)
+
 
 if __name__ == "__main__":
     register()

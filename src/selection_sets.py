@@ -1,20 +1,17 @@
 import bpy
 
-
 def meshes_in_selection():
     return [o for o in bpy.context.selected_objects if o.type == 'MESH']
-
 
 def meshes_without_uv():
     objects_list = meshes_in_selection()
     objects_without_uv = []
     for obj in objects_list:
-        if obj.data.uv_textures:
+        mesh = obj.data
+        if len(mesh.uv_layers) > 0:
             continue
-        if not obj.data.uv_textures:
-            objects_without_uv.append(obj)
+        objects_without_uv.append(obj)
     return objects_without_uv
-
 
 def meshes_with_materials():
     objects_list = meshes_in_selection()
