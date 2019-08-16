@@ -19,10 +19,12 @@ if "bpy" in locals():
     print("---- DEBUG HELP LINE ----")
     import importlib
 
-    importlib.reload(meshes)
     importlib.reload(selection_sets)
+    importlib.reload(meshes)
+    importlib.reload(materials)
+    importlib.reload(uvs)
 else:
-    from . import meshes, selection_sets
+    from . import selection_sets, meshes, materials, uvs
 
 import bpy
 from bpy.props import (
@@ -44,40 +46,94 @@ class NTHG3D_PT_mesh_panel(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
+        # Object to Data naming
         row = layout.row()
-        # UV chan part
-        row.label(text="UV channels :")
-        box = layout.box()
-        row = box.row(align=True)
-        row.label(text="Active:")
-        row.operator("nothing3d.mesh_panel_buttons", text="1").action = "select_UV1"
-        row.operator("nothing3d.mesh_panel_buttons", text="2").action = "select_UV2"
-        row = box.row(align=True)
-        row.operator("nothing3d.mesh_panel_buttons", text="Rename channels").action = "rename_UV"
-        row = box.row(align=True)
-        row.operator("nothing3d.mesh_panel_buttons", text="Report no UV").action = "report_no_UV"
+        row.operator("nothing3d.mesh_panel_buttons", text="Transfer names").action = "transfer_names"
 
 
 class NTHG3D_OT_mesh_panel_buttons(bpy.types.Operator):
     bl_idname = "nothing3d.mesh_panel_buttons"
-    bl_label = "Buttons in meshes panel"
+    bl_label = "Buttons in Meshes panel"
+    action: StringProperty()
+
+    def execute(self, context):
+        if self.action == "transfer_names":
+            meshes.mesh_transfer_names()
+        return {'FINISHED'}
+
+
+class NTHG3D_PT_material_panel(bpy.types.Panel):
+    bl_label = "Materials"
+    bl_idname = "NTHG3D_PT_material_panel"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "Nothing-is-3D"
+
+    def draw(self, context):
+        layout = self.layout
+        box = layout.box()
+        row = box.row(align=True)
+        row.label(text="BackFace:")
+        row.operator("nothing3d.material_panel_buttons", text="on").action = "bfc_on"
+        row.operator("nothing3d.material_panel_buttons", text="off").action = "bfc_off"
+
+
+class NTHG3D_OT_material_panel_buttons(bpy.types.Operator):
+    bl_idname = "nothing3d.material_panel_buttons"
+    bl_label = "Buttons in Materials panel"
+    action: StringProperty()
+
+    def execute(self, context):
+        if self.action == "bfc_on":
+            materials.set_backface_culling(True)
+        if self.action == "bfc_off":
+            materials.set_backface_culling(False)
+        return {'FINISHED'}
+
+
+class NTHG3D_PT_uv_panel(bpy.types.Panel):
+    bl_label = "UVs"
+    bl_idname = "NTHG3D_PT_uv_panel"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "Nothing-is-3D"
+
+    def draw(self, context):
+        layout = self.layout
+        row = layout.row(align=True)
+        row.label(text="Active:")
+        row.operator("nothing3d.uv_panel_buttons", text="1").action = "select_UV1"
+        row.operator("nothing3d.uv_panel_buttons", text="2").action = "select_UV2"
+        row = layout.row(align=True)
+        row.operator("nothing3d.uv_panel_buttons", text="Rename channels").action = "rename_UV"
+        row = layout.row(align=True)
+        row.operator("nothing3d.uv_panel_buttons", text="Report no UV").action = "report_no_UV"
+
+
+class NTHG3D_OT_uv_panel_buttons(bpy.types.Operator):
+    bl_idname = "nothing3d.uv_panel_buttons"
+    bl_label = "Buttons in UVs panel"
     action: StringProperty()
 
     def execute(self, context):
         if self.action == "rename_UV":
-            meshes.rename_uv_channels()
+            uvs.rename_uv_channels()
         if self.action == "select_UV1":
-            meshes.activate_uv_channels(0)
+            uvs.activate_uv_channels(0)
         if self.action == "select_UV2":
-            meshes.activate_uv_channels(1)
+            uvs.activate_uv_channels(1)
         if self.action == "report_no_UV":
-            meshes.report_no_uv(self)
+            uvs.report_no_uv(self)
         return {'FINISHED'}
 
 
 classes = (
     NTHG3D_PT_mesh_panel,
     NTHG3D_OT_mesh_panel_buttons,
+    NTHG3D_PT_material_panel,
+    NTHG3D_OT_material_panel_buttons,
+    NTHG3D_PT_uv_panel,
+    NTHG3D_OT_uv_panel_buttons,
 )
 
 
