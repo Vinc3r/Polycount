@@ -3,8 +3,8 @@ from . import selection_sets
 
 
 def rename_uv_channels():
-    objects_list = selection_sets.meshes_in_selection()
-    for obj in objects_list:
+    objects_selected = selection_sets.meshes_in_selection()
+    for obj in objects_selected:
         mesh = obj.data
         if len(mesh.uv_layers) < 0:
             continue
@@ -17,8 +17,8 @@ def rename_uv_channels():
 
 
 def activate_uv_channels(uv_chan):
-    objects_list = selection_sets.meshes_in_selection()
-    for obj in objects_list:
+    objects_selected = selection_sets.meshes_in_selection()
+    for obj in objects_selected:
         mesh = obj.data
         if len(mesh.uv_layers) == 0:
             print("{} has no UV".format(obj.name))
@@ -31,11 +31,11 @@ def activate_uv_channels(uv_chan):
 
 
 def report_no_uv(operator):
-    objects_list = selection_sets.meshes_without_uv()
+    objects_selected = selection_sets.meshes_without_uv()
     obj_names: str = ""
-    for obj in objects_list:
+    for obj in objects_selected:
         obj_names += "{}".format(obj.name)
-        if objects_list.index(obj) < (len(objects_list) - 1):
+        if objects_selected.index(obj) < (len(objects_selected) - 1):
             obj_names += ", "
     message = "no UV chan' on: {}".format(obj_names)
     operator.report({'WARNING'}, message)
