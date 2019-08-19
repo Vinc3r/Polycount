@@ -17,6 +17,7 @@ def meshes_without_uv():
         if len(mesh.uv_layers) == 0:
             # no uv at all
             objects_without_uv.append(obj)
+            objects_without_uv2.append(obj)
             continue
         if len(mesh.uv_layers) == 1:
             # only one chan

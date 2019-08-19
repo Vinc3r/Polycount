@@ -35,4 +35,5 @@ def calculate_mesh_stats():
             element.data.vertices), tris_count, has_ngon]
         meshes_stats.append(current_mesh_stats)
         total_stats = [total_verts_in_selection, total_tris_in_selection]
+
     return meshes_stats, total_stats

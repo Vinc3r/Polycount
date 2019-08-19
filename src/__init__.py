@@ -64,10 +64,11 @@ class NTHG3D_OT_mesh_transfer_names(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.view_layer.objects.active.mode == 'OBJECT'
+        return context.view_layer.objects.active.type == 'MESH'
 
     def execute(self, context):
         meshes.transfer_names()
+
         return {'FINISHED'}
 
 
@@ -82,6 +83,7 @@ class NTHG3D_OT_mesh_set_autosmooth(bpy.types.Operator):
 
     def execute(self, context):
         meshes.set_autosmooth(context.scene.autosmooth_angle)
+
         return {'FINISHED'}
 
 
@@ -109,6 +111,7 @@ class NTHG3D_OT_material_backface(bpy.types.Operator):
 
     def execute(self, context):
         materials.set_backface_culling(self.toogle)
+
         return {'FINISHED'}
 
 
@@ -126,10 +129,12 @@ class NTHG3D_PT_stats_panel(bpy.types.Panel):
 
         if not scene.are_stats_enabled:
             row = layout.row()
-            row.operator("nothing3d.stats_panel_table", text="Enable", depress=False).show_stats = True
+            row.operator("nothing3d.stats_panel_table",
+                         text="Enable", depress=False).show_stats = True
         else:
             row = layout.row()
-            row.operator("nothing3d.stats_panel_table", text="Disable", depress=True).show_stats = False
+            row.operator("nothing3d.stats_panel_table",
+                         text="Disable", depress=True).show_stats = False
             stats_table, total_stats_table = stats.calculate_mesh_stats()
             box = layout.box()
             row = box.row(align=True)
@@ -178,7 +183,9 @@ class NTHG3D_OT_stats_panel_table(bpy.types.Operator):
     def execute(self, context):
         context.scene.are_stats_enabled = self.show_stats
         if self.mesh_to_select is not "":
-            context.view_layer.objects.active = bpy.data.objects[str(self.mesh_to_select)]
+            context.view_layer.objects.active = bpy.data.objects[str(
+                self.mesh_to_select)]
+
         return {'FINISHED'}
 
 
@@ -196,6 +203,9 @@ class NTHG3D_PT_uv_panel(bpy.types.Panel):
         row.operator("nothing3d.uv_activate_channel", text="1").channel = 0
         row.operator("nothing3d.uv_activate_channel", text="2").channel = 1
         row = layout.row(align=True)
+        row.operator("nothing3d.uv_box_mapping", text="Box mapping")
+        row.prop(context.scene, "box_mapping_size", text="")
+        row = layout.row(align=True)
         row.operator("nothing3d.uv_rename_channel", text="Rename channels")
         row = layout.row(align=True)
         row.label(text="Report: ")
@@ -211,6 +221,21 @@ class NTHG3D_OT_uv_activate_channel(bpy.types.Operator):
 
     def execute(self, context):
         uvs.activate_uv_channels(self.channel)
+
+        return {'FINISHED'}
+
+
+class NTHG3D_OT_uv_box_mapping(bpy.types.Operator):
+    bl_idname = "nothing3d.uv_box_mapping"
+    bl_label = "UV1 box mapping (MagicUV UVW algorithm)"
+    bl_description = "UV1 box mapping (MagicUV UVW algorithm)"
+
+    def execute(self, context):
+        message, is_all_good = uvs.report_no_uv(0)
+        if not is_all_good:
+            self.report({'WARNING'}, message)
+        uvs.box_mapping(context.scene.box_mapping_size)
+
         return {'FINISHED'}
 
 
@@ -221,6 +246,7 @@ class NTHG3D_OT_uv_rename_channel(bpy.types.Operator):
 
     def execute(self, context):
         uvs.rename_uv_channels()
+
         return {'FINISHED'}
 
 
@@ -235,7 +261,12 @@ class NTHG3D_OT_uv_report_none(bpy.types.Operator):
         return context.view_layer.objects.active.mode == 'OBJECT'
 
     def execute(self, context):
-        uvs.report_no_uv(self)
+        message, is_all_good = uvs.report_no_uv(self.channel)
+        if is_all_good:
+            self.report({'INFO'}, message)
+        else:
+            self.report({'WARNING'}, message)
+
         return {'FINISHED'}
 
 
@@ -249,6 +280,7 @@ classes = (
     NTHG3D_OT_stats_panel_table,
     NTHG3D_PT_uv_panel,
     NTHG3D_OT_uv_activate_channel,
+    NTHG3D_OT_uv_box_mapping,
     NTHG3D_OT_uv_rename_channel,
     NTHG3D_OT_uv_report_none,
 )
@@ -266,6 +298,12 @@ def register():
         min=0.0,
         max=180.0,
     )
+    Scene.box_mapping_size = FloatProperty(
+        name="box mapping size",
+        description="box mapping size",
+        default=1.0,
+        min=0.0,
+    )
 
 
 def unregister():
@@ -273,8 +311,9 @@ def unregister():
     for cls in reversed(classes):
         unregister_class(cls)
 
-    del Scene.are_stats_enabled
+    del Scene.box_mapping_size
     del Scene.autosmooth_angle
+    del Scene.are_stats_enabled
 
 
 if __name__ == "__main__":
