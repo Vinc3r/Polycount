@@ -8,12 +8,21 @@ def meshes_in_selection():
 def meshes_without_uv():
     objects_selected = meshes_in_selection()
     objects_without_uv = []
+    objects_without_uv2 = []
     for obj in objects_selected:
         mesh = obj.data
-        if len(mesh.uv_layers) > 0:
+        if len(mesh.uv_layers) > 2:
+            # have more than 2 uv
             continue
-        objects_without_uv.append(obj)
-    return objects_without_uv
+        if len(mesh.uv_layers) == 0:
+            # no uv at all
+            objects_without_uv.append(obj)
+            continue
+        if len(mesh.uv_layers) == 1:
+            # only one chan
+            objects_without_uv2.append(obj)
+            continue
+    return objects_without_uv, objects_without_uv2
 
 
 def meshes_with_materials():

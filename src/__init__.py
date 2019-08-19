@@ -52,8 +52,9 @@ class NTHG3D_PT_mesh_panel(bpy.types.Panel):
         layout = self.layout
         row = layout.row()
         row.operator("nothing3d.mesh_transfer_names", text="Transfer names")
-        row = layout.row()
+        row = layout.row(align=True)
         row.operator("nothing3d.mesh_set_autosmooth", text="Set autosmooth")
+        row.prop(context.scene, "autosmooth_angle", text="", slider=True)
 
 
 class NTHG3D_OT_mesh_transfer_names(bpy.types.Operator):
@@ -77,10 +78,10 @@ class NTHG3D_OT_mesh_set_autosmooth(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.view_layer.objects.active.mode == 'OBJECT'
+        return context.view_layer.objects.active.type == 'MESH'
 
     def execute(self, context):
-        meshes.set_autosmooth()
+        meshes.set_autosmooth(context.scene.autosmooth_angle)
         return {'FINISHED'}
 
 
@@ -123,7 +124,7 @@ class NTHG3D_PT_stats_panel(bpy.types.Panel):
 
         layout = self.layout
 
-        if scene.are_stats_enabled == False:
+        if not scene.are_stats_enabled:
             row = layout.row()
             row.operator("nothing3d.stats_panel_table", text="Enable", depress=False).show_stats = True
         else:
@@ -142,7 +143,8 @@ class NTHG3D_PT_stats_panel(bpy.types.Panel):
                         row.operator("nothing3d.stats_panel_table", text=str(obj[0]), depress=True).mesh_to_select = \
                             obj[0]
                     else:
-                        row.operator("nothing3d.stats_panel_table", text=str(obj[0]), depress=False).mesh_to_select = \
+                        row.operator("nothing3d.stats_panel_table", text=str(obj[0]),
+                                     depress=False).mesh_to_select = \
                             obj[0]
                     row.label(text=str(obj[1]))
                     if not obj[3]:
@@ -196,7 +198,9 @@ class NTHG3D_PT_uv_panel(bpy.types.Panel):
         row = layout.row(align=True)
         row.operator("nothing3d.uv_rename_channel", text="Rename channels")
         row = layout.row(align=True)
-        row.operator("nothing3d.uv_report_none", text="Report no UV")
+        row.label(text="Report: ")
+        row.operator("nothing3d.uv_report_none", text="no UV").channel = 0
+        row.operator("nothing3d.uv_report_none", text="2").channel = 1
 
 
 class NTHG3D_OT_uv_activate_channel(bpy.types.Operator):
@@ -209,6 +213,7 @@ class NTHG3D_OT_uv_activate_channel(bpy.types.Operator):
         uvs.activate_uv_channels(self.channel)
         return {'FINISHED'}
 
+
 class NTHG3D_OT_uv_rename_channel(bpy.types.Operator):
     bl_idname = "nothing3d.uv_rename_channel"
     bl_label = "Normalize UV channels naming"
@@ -218,10 +223,12 @@ class NTHG3D_OT_uv_rename_channel(bpy.types.Operator):
         uvs.rename_uv_channels()
         return {'FINISHED'}
 
+
 class NTHG3D_OT_uv_report_none(bpy.types.Operator):
     bl_idname = "nothing3d.uv_report_none"
     bl_label = "Report object without UV chan"
     bl_description = "Report object without UV chan, both in console and Info editor"
+    channel: IntProperty()
 
     @classmethod
     def poll(cls, context):
@@ -252,6 +259,13 @@ def register():
     for cls in classes:
         register_class(cls)
     Scene.are_stats_enabled = BoolProperty()
+    Scene.autosmooth_angle = FloatProperty(
+        name="autosmooth angle",
+        description="autosmooth angle",
+        default=85.0,
+        min=0.0,
+        max=180.0,
+    )
 
 
 def unregister():
@@ -260,6 +274,7 @@ def unregister():
         unregister_class(cls)
 
     del Scene.are_stats_enabled
+    del Scene.autosmooth_angle
 
 
 if __name__ == "__main__":

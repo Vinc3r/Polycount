@@ -31,12 +31,20 @@ def activate_uv_channels(uv_chan):
 
 
 def report_no_uv(operator):
-    objects_selected = selection_sets.meshes_without_uv()
-    obj_names: str = ""
-    for obj in objects_selected:
-        obj_names += "{}".format(obj.name)
-        if objects_selected.index(obj) < (len(objects_selected) - 1):
-            obj_names += ", "
-    message = "no UV chan' on: {}".format(obj_names)
+    objects_no_uv = []
+    obj_no_uv_names: str = ""
+    message_suffix = "no UV  on:"
+    if operator.channel == 1:
+        # UV2 check
+        objects_no_uv = selection_sets.meshes_without_uv()[1]
+        message_suffix = "no UV2 on:"
+    else:
+        # ask to report no UV at all
+        objects_no_uv = selection_sets.meshes_without_uv()[0]
+    for obj in objects_no_uv:
+        obj_no_uv_names += "{}".format(obj.name)
+        if objects_no_uv.index(obj) < (len(objects_no_uv) - 1):
+            obj_no_uv_names += ", "
+    message = "{} {}".format(message_suffix, obj_no_uv_names)
     operator.report({'WARNING'}, message)
     return {'FINISHED'}
