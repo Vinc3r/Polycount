@@ -2,6 +2,8 @@
 
 A Blender add-on made to work faster, often oriented 3D realtime workflow.
 
+**currently in Blender 2.8 update, still not available in zip, but usable from /src/ folder**
+
 - Download or update the addon from the [release page](https://github.com/Vinc3r/BlenderScripts/releases/).
 
 - Changelog [available here](https://github.com/Vinc3r/BlenderScripts/blob/master/changelog.md).
