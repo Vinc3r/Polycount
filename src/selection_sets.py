@@ -43,8 +43,3 @@ def meshes_without_materials():
         if not obj.data.materials:
             objects_without_mtl.append(obj)
     return objects_without_mtl
-
-
-def make_object_active(self, context):
-    context.scene.objects.active = bpy.data.objects[str(self.mesh_to_select)]
-    return {'FINISHED'}

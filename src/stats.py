@@ -57,10 +57,10 @@ class NTHG3D_PT_stats_panel(bpy.types.Panel):
 
     def draw(self, context):
         scene = context.scene
-
         layout = self.layout
 
         if not scene.are_stats_enabled:
+            # show enable button
             row = layout.row()
             row.operator("nothing3d.stats_panel_table",
                          text="Enable", depress=False).show_stats = True
@@ -111,7 +111,7 @@ class NTHG3D_OT_stats_panel_table(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.view_layer.objects.active.mode == 'OBJECT'
+        return len(context.view_layer.objects) > 0
 
     def execute(self, context):
         context.scene.are_stats_enabled = self.show_stats

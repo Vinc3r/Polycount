@@ -13,18 +13,21 @@ from bpy.props import (
 
 
 def transfer_names():
+    # handling active object
     user_active = bpy.context.view_layer.objects.active
     is_user_in_edit_mode = False
     if bpy.context.view_layer.objects.active.mode == 'EDIT':
         is_user_in_edit_mode = True
         bpy.ops.object.mode_set(mode='OBJECT')
 
+    # function core
     objects_selected = selection_sets.meshes_in_selection()
     for obj in objects_selected:
         bpy.context.view_layer.objects.active = obj
         mesh = obj.data
         mesh.name = obj.name
 
+    # handling active object
     bpy.context.view_layer.objects.active = user_active
     if is_user_in_edit_mode:
         bpy.ops.object.mode_set(mode='EDIT')
@@ -33,12 +36,14 @@ def transfer_names():
 
 
 def set_autosmooth(user_angle):
+    # handling active object
     user_active = bpy.context.view_layer.objects.active
     is_user_in_edit_mode = False
     if bpy.context.view_layer.objects.active.mode == 'EDIT':
         is_user_in_edit_mode = True
         bpy.ops.object.mode_set(mode='OBJECT')
 
+    # function core
     objects_selected = selection_sets.meshes_in_selection()
     for obj in objects_selected:
         bpy.context.view_layer.objects.active = obj
@@ -49,6 +54,7 @@ def set_autosmooth(user_angle):
         mesh.auto_smooth_angle = math.radians(user_angle)
         bpy.ops.object.shade_smooth()
 
+    # handling active object
     bpy.context.view_layer.objects.active = user_active
     if is_user_in_edit_mode:
         bpy.ops.object.mode_set(mode='EDIT')
@@ -79,11 +85,10 @@ class NTHG3D_OT_mesh_transfer_names(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.view_layer.objects.active.type == 'MESH'
+        return len(context.view_layer.objects) > 0
 
     def execute(self, context):
         transfer_names()
-
         return {'FINISHED'}
 
 
@@ -94,11 +99,10 @@ class NTHG3D_OT_mesh_set_autosmooth(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.view_layer.objects.active.type == 'MESH'
+        return len(context.view_layer.objects) > 0
 
     def execute(self, context):
         set_autosmooth(context.scene.autosmooth_angle)
-
         return {'FINISHED'}
 
 

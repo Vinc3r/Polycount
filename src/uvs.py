@@ -198,6 +198,10 @@ class NTHG3D_OT_uv_activate_channel(bpy.types.Operator):
     bl_description = "Set active UV"
     channel: IntProperty()
 
+    @classmethod
+    def poll(cls, context):
+        return len(context.view_layer.objects) > 0
+
     def execute(self, context):
         message, is_all_good = report_no_uv(self.channel)
         if not is_all_good:
@@ -211,6 +215,10 @@ class NTHG3D_OT_uv_box_mapping(bpy.types.Operator):
     bl_idname = "nothing3d.uv_box_mapping"
     bl_label = "UV1 box mapping (MagicUV UVW algorithm)"
     bl_description = "UV1 box mapping (MagicUV UVW algorithm)"
+    
+    @classmethod
+    def poll(cls, context):
+        return len(context.view_layer.objects) > 0
 
     def execute(self, context):
         message, is_all_good = report_no_uv(0)
@@ -226,6 +234,10 @@ class NTHG3D_OT_uv_rename_channel(bpy.types.Operator):
     bl_label = "Normalize UV channels naming"
     bl_description = "Normalize UV channels naming (UVMap, then UV2, UV3...)"
 
+    @classmethod
+    def poll(cls, context):
+        return len(context.view_layer.objects) > 0
+
     def execute(self, context):
         rename_uv_channels()
 
@@ -240,7 +252,7 @@ class NTHG3D_OT_uv_report_none(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.view_layer.objects.active.mode == 'OBJECT'
+        return len(context.view_layer.objects) > 0
 
     def execute(self, context):
         message, is_all_good = report_no_uv(self.channel)
