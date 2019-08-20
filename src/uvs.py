@@ -1,8 +1,18 @@
 import bpy
 import bmesh
 from . import selection_sets
-from math import *
-from mathutils import *
+from math import sin, cos, pi
+from mathutils import Vector
+from bpy.types import Scene
+from bpy.props import (
+    EnumProperty,
+    FloatProperty,
+    FloatVectorProperty,
+    BoolProperty,
+    IntProperty,
+    StringProperty
+)
+
 
 
 def rename_uv_channels():
@@ -160,3 +170,120 @@ def mesh_box_mapping(mesh, size=1.0):
 
     bmesh.update_edit_mesh(mesh)
     bm.free()
+
+
+
+class NTHG3D_PT_uv_panel(bpy.types.Panel):
+    bl_label = "UVs"
+    bl_idname = "NTHG3D_PT_uv_panel"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "Nothing-is-3D"
+
+    def draw(self, context):
+        layout = self.layout
+        row = layout.row(align=True)
+        row.label(text="Active:")
+        row.operator("nothing3d.uv_activate_channel", text="1").channel = 0
+        row.operator("nothing3d.uv_activate_channel", text="2").channel = 1
+        row = layout.row(align=True)
+        row.operator("nothing3d.uv_box_mapping", text="Box mapping")
+        row.prop(context.scene, "box_mapping_size", text="")
+        row = layout.row(align=True)
+        row.operator("nothing3d.uv_rename_channel", text="Rename channels")
+        row = layout.row(align=True)
+        row.label(text="Report: ")
+        row.operator("nothing3d.uv_report_none", text="no UV").channel = 0
+        row.operator("nothing3d.uv_report_none", text="2").channel = 1
+
+
+class NTHG3D_OT_uv_activate_channel(bpy.types.Operator):
+    bl_idname = "nothing3d.uv_activate_channel"
+    bl_label = "Set active UV"
+    bl_description = "Set active UV"
+    channel: IntProperty()
+
+    def execute(self, context):
+        activate_uv_channels(self.channel)
+
+        return {'FINISHED'}
+
+
+class NTHG3D_OT_uv_box_mapping(bpy.types.Operator):
+    bl_idname = "nothing3d.uv_box_mapping"
+    bl_label = "UV1 box mapping (MagicUV UVW algorithm)"
+    bl_description = "UV1 box mapping (MagicUV UVW algorithm)"
+
+    def execute(self, context):
+        message, is_all_good = report_no_uv(0)
+        if not is_all_good:
+            self.report({'WARNING'}, message)
+        box_mapping(context.scene.box_mapping_size)
+
+        return {'FINISHED'}
+
+
+class NTHG3D_OT_uv_rename_channel(bpy.types.Operator):
+    bl_idname = "nothing3d.uv_rename_channel"
+    bl_label = "Normalize UV channels naming"
+    bl_description = "Normalize UV channels naming (UVMap, then UV2, UV3...)"
+
+    def execute(self, context):
+        rename_uv_channels()
+
+        return {'FINISHED'}
+
+
+class NTHG3D_OT_uv_report_none(bpy.types.Operator):
+    bl_idname = "nothing3d.uv_report_none"
+    bl_label = "Report object without UV chan"
+    bl_description = "Report object without UV chan, both in console and Info editor"
+    channel: IntProperty()
+
+    @classmethod
+    def poll(cls, context):
+        return context.view_layer.objects.active.mode == 'OBJECT'
+
+    def execute(self, context):
+        message, is_all_good = report_no_uv(self.channel)
+        if is_all_good:
+            self.report({'INFO'}, message)
+        else:
+            self.report({'WARNING'}, message)
+
+        return {'FINISHED'}
+
+
+classes = (
+    NTHG3D_PT_uv_panel,
+    NTHG3D_OT_uv_activate_channel,
+    NTHG3D_OT_uv_box_mapping,
+    NTHG3D_OT_uv_rename_channel,
+    NTHG3D_OT_uv_report_none,
+)
+
+
+
+def register():
+    from bpy.utils import register_class
+    for cls in classes:
+        register_class(cls)
+    Scene.box_mapping_size = FloatProperty(
+        name="box mapping size",
+        description="box mapping size",
+        default=1.0,
+        min=0.0,
+    )
+
+
+
+def unregister():
+    from bpy.utils import unregister_class
+    for cls in reversed(classes):
+        unregister_class(cls)
+
+    del Scene.box_mapping_size
+
+
+if __name__ == "__main__":
+    register()
