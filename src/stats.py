@@ -68,7 +68,7 @@ class NTHG3D_PT_stats_panel(bpy.types.Panel):
             row = layout.row()
             row.operator("nothing3d.stats_panel_table",
                          text="Disable", depress=True).show_stats = False
-            stats_table, total_stats_table = stats.calculate_mesh_stats()
+            stats_table, total_stats_table = calculate_mesh_stats()
             box = layout.box()
             row = box.row(align=True)
             row.label(text="Object")
