@@ -14,7 +14,6 @@ from bpy.props import (
 )
 
 
-
 def rename_uv_channels():
     objects_selected = selection_sets.meshes_in_selection()
     for obj in objects_selected:
@@ -33,11 +32,8 @@ def activate_uv_channels(uv_chan):
     objects_selected = selection_sets.meshes_in_selection()
     for obj in objects_selected:
         mesh = obj.data
-        if len(mesh.uv_layers) == 0:
-            print("{} has no UV".format(obj.name))
-            continue
-        if len(mesh.uv_layers) <= uv_chan:
-            print("{} has no UV{}".format(obj.name, (uv_chan + 1)))
+        if len(mesh.uv_layers) == 0 or \
+                len(mesh.uv_layers) <= uv_chan:
             continue
         obj.data.uv_layers[uv_chan].active = True
 
@@ -172,7 +168,6 @@ def mesh_box_mapping(mesh, size=1.0):
     bm.free()
 
 
-
 class NTHG3D_PT_uv_panel(bpy.types.Panel):
     bl_label = "UVs"
     bl_idname = "NTHG3D_PT_uv_panel"
@@ -204,6 +199,9 @@ class NTHG3D_OT_uv_activate_channel(bpy.types.Operator):
     channel: IntProperty()
 
     def execute(self, context):
+        message, is_all_good = report_no_uv(self.channel)
+        if not is_all_good:
+            self.report({'WARNING'}, message)
         activate_uv_channels(self.channel)
 
         return {'FINISHED'}
@@ -263,7 +261,6 @@ classes = (
 )
 
 
-
 def register():
     from bpy.utils import register_class
     for cls in classes:
@@ -274,7 +271,6 @@ def register():
         default=1.0,
         min=0.0,
     )
-
 
 
 def unregister():
