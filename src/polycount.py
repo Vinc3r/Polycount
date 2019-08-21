@@ -49,6 +49,9 @@ def calculate_mesh_polycount():
         ])
         bm.free()
     total_polycount = [total_verts_in_selection, total_tris_in_selection, total_area]
+    def sortList(item):
+        return item[0].casefold()
+    objects_polycount.sort(key=sortList)
 
     return objects_polycount, total_polycount
 
@@ -82,7 +85,7 @@ class NTHG3D_PT_polycount_panel(bpy.types.Panel):
             row.label(text="Verts")
             row.label(text="Tris")
             row.label(text="Area")
-            if polycount_table is not None:
+            if len(polycount_table) > 0:
                 for obj in polycount_table:
                     row = col_flow.row(align=True)
                     # show if active
@@ -104,7 +107,7 @@ class NTHG3D_PT_polycount_panel(bpy.types.Panel):
             box = layout.box()
             row = box.row(align=True)
             row.label(text="Total")
-            if total_polycount_table != 0:
+            if len(total_polycount_table) > 0:
                 row.label(text="%i" % (total_polycount_table[0]))
                 row.label(text="%i" % (total_polycount_table[1]))
                 row.label(text="%i" % (total_polycount_table[2]))

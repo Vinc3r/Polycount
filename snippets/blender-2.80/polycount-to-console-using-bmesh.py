@@ -1,7 +1,7 @@
 import bpy
 import bmesh
 print("+++++++++++++++++")
-for obj in bpy.context.selected_objects:    
+for obj in bpy.context.view_layer.objects:    
     bm = bmesh.new()
     bm.from_mesh(obj.data)
     bm.faces.ensure_lookup_table()
@@ -11,12 +11,15 @@ for obj in bpy.context.selected_objects:
         area += face.calc_area()
         if len(face.edges) > 4:
             has_ngon = True
-    print(obj.name)
+    verts = len(bm.verts)
     tri = len(bm.calc_loop_triangles())
     faces = len(bm.faces)
-    print("  verts: ",len(bm.verts))
-    print("  tri: ", tri)
-    print("  faces: ", faces)
-    print("  ngon: {}".format(has_ngon))
-    print("  area: {}".format(round(area,1)))
+    area = round(area,1)
+    polycount = [verts, tri, faces, has_ngon, area]
+    print(obj.name)
+    print("  verts: {}".format(polycount[0]))
+    print("  tri: {}".format(polycount[1]))
+    print("  faces: {}".format(polycount[2]))
+    print("  ngon: {}".format(polycount[3]))
+    print("  area: {}".format(polycount[4]))
     bm.free()
