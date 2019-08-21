@@ -100,34 +100,43 @@ class NTHG3D_PT_material_panel(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
+        # misc
         box = layout.box()
         row = box.row(align=True)
+        ## backface culling
         row.label(text="BackFace:")
-        row.operator("nothing3d.material_backface", text="on").toogle = True
-        row.operator("nothing3d.material_backface", text="off").toogle = False
+        row.operator("nothing3d.material_backface", text="On").toogle = True
+        row.operator("nothing3d.material_backface", text="Off").toogle = False
         row = box.row(align=True)
+        ## active texture node
         row.label(text="Activate texture:")
         row = box.row(align=True)
         row.operator("nothing3d.material_active_texture",
                      text="albedo").texture_type = "albedo"
         row = layout.row()
+        # glTF workflow
         row.label(text="glTF workflow:")
         box = layout.box()
         row = box.row()
+        ## muting textures
         row.label(text="Mute textures except:")
-        row = box.row(align=True)
+        grid = box.grid_flow(row_major =True, even_columns=True, even_rows=True, align=True)
+        row = grid.row(align=True)
         row.operator("nothing3d.material_gltf_mute",
-                     text="albedo").exclude = "albedo"
+                     text="Albedo").exclude = "albedo"
+        row = grid.row(align=True)
         row.operator("nothing3d.material_gltf_mute",
                      text="ORM").exclude = "orm"
+        row = grid.row(align=True)
+        row.operator("nothing3d.material_gltf_mute",
+                     text="Normal").exclude = "normal"
+        row = grid.row(align=True)
+        row.operator("nothing3d.material_gltf_mute",
+                     text="Emissive").exclude = "emit"
         row = box.row(align=True)
         row.operator("nothing3d.material_gltf_mute",
-                     text="nm").exclude = "normal"
-        row.operator("nothing3d.material_gltf_mute",
-                     text="emit").exclude = "emit"
-        row = box.row(align=True)
-        row.operator("nothing3d.material_gltf_mute",
-                     text="unmute").exclude = "unmute"
+                     text="Unmute").exclude = "unmute"
+        ## fixing
         row = box.row()
         row.label(text="Fix:")
         row.label(text="color space")
