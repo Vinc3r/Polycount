@@ -70,25 +70,28 @@ class NTHG3D_PT_stats_panel(bpy.types.Panel):
                          text="Disable", depress=True).show_stats = False
             stats_table, total_stats_table = calculate_mesh_stats()
             box = layout.box()
-            row = box.row(align=True)
+            col_flow = box.column_flow(
+                columns=0, align=True)
+            row = col_flow.row(align=True)
             row.label(text="Object")
             row.label(text="Verts")
             row.label(text="Tris")
             if stats_table is not None:
                 for obj in stats_table:
-                    row = box.row(align=True)
+                    row = col_flow.row(align=True)
+                    # show if active
                     if context.view_layer.objects.active.name == str(obj[0]):
-                        row.operator("nothing3d.stats_panel_table", text=str(obj[0]), depress=True).mesh_to_select = \
-                            obj[0]
+                        row.operator("nothing3d.stats_panel_table",
+                                     text=str(obj[0]), depress=True).mesh_to_select = obj[0]
                     else:
-                        row.operator("nothing3d.stats_panel_table", text=str(obj[0]),
-                                     depress=False).mesh_to_select = \
-                            obj[0]
+                        row.operator("nothing3d.stats_panel_table",
+                                     text=str(obj[0]), depress=False).mesh_to_select = obj[0]
+                    # show verts
                     row.label(text=str(obj[1]))
+                    # show tri & ngon
                     if not obj[3]:
                         row.label(text=str(obj[2]))
                     else:
-                        # visual indicator if ngon
                         row.label(text="± %i" % (obj[2]))
             # show total stats
             box = layout.box()
@@ -106,12 +109,12 @@ class NTHG3D_OT_stats_panel_table(bpy.types.Operator):
     bl_idname = "nothing3d.stats_panel_table"
     bl_label = "Show Stats in Scene properties panel"
     bl_description = "Show Stats in Scene properties panel"
-    show_stats: BoolProperty()
+    show_stats: BoolProperty(default=True)
     mesh_to_select: StringProperty()
 
     @classmethod
     def poll(cls, context):
-        return len(context.view_layer.objects) > 0
+        return len(context.view_layer.objects) > 0 and bpy.context.view_layer.objects.active.mode == 'OBJECT'
 
     def execute(self, context):
         context.scene.are_stats_enabled = self.show_stats
@@ -132,7 +135,7 @@ def register():
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
-    Scene.are_stats_enabled = BoolProperty()
+    Scene.are_stats_enabled = BoolProperty(default=False)
 
 
 def unregister():

@@ -44,9 +44,9 @@ def set_active_texture(type="albedo"):
                             if link.to_node.type != texture_condition[2]:
                                 # link have to pass test
                                 continue
-                            # ok we're sure about this node, let's make it last selected
-                            node.select = False
+                            # ok we're sure about this node, let's make it active
                             node.select = True
+                            mat.node_tree.nodes.active = node
     return {'FINISHED'}
 
 
@@ -103,12 +103,12 @@ class NTHG3D_PT_material_panel(bpy.types.Panel):
         # misc
         box = layout.box()
         row = box.row(align=True)
-        ## backface culling
+        # backface culling
         row.label(text="BackFace:")
         row.operator("nothing3d.material_backface", text="On").toogle = True
         row.operator("nothing3d.material_backface", text="Off").toogle = False
         row = box.row(align=True)
-        ## active texture node
+        # active texture node
         row.label(text="Activate texture:")
         row = box.row(align=True)
         row.operator("nothing3d.material_active_texture",
@@ -118,9 +118,10 @@ class NTHG3D_PT_material_panel(bpy.types.Panel):
         row.label(text="glTF workflow:")
         box = layout.box()
         row = box.row()
-        ## muting textures
+        # muting textures
         row.label(text="Mute textures except:")
-        grid = box.grid_flow(row_major =True, even_columns=True, even_rows=True, align=True)
+        grid = box.grid_flow(
+            row_major=True, even_columns=True, even_rows=True, align=True)
         row = grid.row(align=True)
         row.operator("nothing3d.material_gltf_mute",
                      text="Albedo").exclude = "albedo"
@@ -136,7 +137,7 @@ class NTHG3D_PT_material_panel(bpy.types.Panel):
         row = box.row(align=True)
         row.operator("nothing3d.material_gltf_mute",
                      text="Unmute").exclude = "unmute"
-        ## fixing
+        # fixing
         row = box.row()
         row.label(text="Fix:")
         row.label(text="color space")
