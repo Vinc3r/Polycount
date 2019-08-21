@@ -19,6 +19,7 @@ def calculate_mesh_polycount():
     total_verts_in_selection = 0
     objects_polycount = []
     total_polycount = 0
+    total_area = 0
 
     # calculate only selected objects
     for obj in selection_sets.meshes_in_selection():
@@ -33,19 +34,21 @@ def calculate_mesh_polycount():
             area += face.calc_area()
             if len(face.edges) > 4:
                 has_ngon = True
+        area = round(area,1)
         # adding obj polycount to total count
         total_tris_in_selection += tris_count
         total_verts_in_selection += verts_count
+        total_area += area
         # generate table
         objects_polycount.append([
             obj.name,
             verts_count,
             tris_count,
             has_ngon,
-            round(area,1)
+            area
         ])
         bm.free()
-    total_polycount = [total_verts_in_selection, total_tris_in_selection]
+    total_polycount = [total_verts_in_selection, total_tris_in_selection, total_area]
 
     return objects_polycount, total_polycount
 
@@ -104,7 +107,7 @@ class NTHG3D_PT_polycount_panel(bpy.types.Panel):
             if total_polycount_table != 0:
                 row.label(text="%i" % (total_polycount_table[0]))
                 row.label(text="%i" % (total_polycount_table[1]))
-                row.label(text="-")
+                row.label(text="%i" % (total_polycount_table[2]))
             else:
                 row.label(text="-")
                 row.label(text="-")
