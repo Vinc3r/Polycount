@@ -11,13 +11,13 @@ from bpy.props import (
 )
 
 
-def calculate_mesh_stats():
+def calculate_mesh_polycount():
     # thanks to sambler for some piece of code https://github.com/sambler/addonsByMe/blob/master/mesh_summary.py
 
     total_tris_in_selection = 0
     total_verts_in_selection = 0
-    meshes_stats = []
-    total_stats = 0
+    meshes_polycount = []
+    total_polycount = 0
 
     # test only selected meshes
     selected_meshes = selection_sets.meshes_in_selection()
@@ -36,21 +36,21 @@ def calculate_mesh_stats():
             else:
                 tris_count += 3
                 has_ngon = True
-        # adding element stats to total count
+        # adding element polycount to total count
         total_tris_in_selection += tris_count
         total_verts_in_selection += len(element.data.vertices)
         # generate table
-        current_mesh_stats = [element.name, len(
+        current_mesh_polycount = [element.name, len(
             element.data.vertices), tris_count, has_ngon]
-        meshes_stats.append(current_mesh_stats)
-        total_stats = [total_verts_in_selection, total_tris_in_selection]
+        meshes_polycount.append(current_mesh_polycount)
+        total_polycount = [total_verts_in_selection, total_tris_in_selection]
 
-    return meshes_stats, total_stats
+    return meshes_polycount, total_polycount
 
 
-class NTHG3D_PT_stats_panel(bpy.types.Panel):
-    bl_label = "Stats"
-    bl_idname = "NTHG3D_PT_stats_panel"
+class NTHG3D_PT_polycount_panel(bpy.types.Panel):
+    bl_label = "Polycount"
+    bl_idname = "NTHG3D_PT_polycount_panel"
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
     bl_context = "scene"
@@ -59,16 +59,16 @@ class NTHG3D_PT_stats_panel(bpy.types.Panel):
         scene = context.scene
         layout = self.layout
 
-        if not scene.are_stats_enabled:
+        if not scene.is_polycount_enable:
             # show enable button
             row = layout.row()
-            row.operator("nothing3d.stats_panel_table",
-                         text="Enable", depress=False).show_stats = True
+            row.operator("nothing3d.polycount_panel_table",
+                         text="Enable", depress=False).show_polycount = True
         else:
             row = layout.row()
-            row.operator("nothing3d.stats_panel_table",
-                         text="Disable", depress=True).show_stats = False
-            stats_table, total_stats_table = calculate_mesh_stats()
+            row.operator("nothing3d.polycount_panel_table",
+                         text="Disable", depress=True).show_polycount = False
+            polycount_table, total_polycount_table = calculate_mesh_polycount()
             box = layout.box()
             col_flow = box.column_flow(
                 columns=0, align=True)
@@ -76,15 +76,15 @@ class NTHG3D_PT_stats_panel(bpy.types.Panel):
             row.label(text="Object")
             row.label(text="Verts")
             row.label(text="Tris")
-            if stats_table is not None:
-                for obj in stats_table:
+            if polycount_table is not None:
+                for obj in polycount_table:
                     row = col_flow.row(align=True)
                     # show if active
                     if context.view_layer.objects.active.name == str(obj[0]):
-                        row.operator("nothing3d.stats_panel_table",
+                        row.operator("nothing3d.polycount_panel_table",
                                      text=str(obj[0]), depress=True).mesh_to_select = obj[0]
                     else:
-                        row.operator("nothing3d.stats_panel_table",
+                        row.operator("nothing3d.polycount_panel_table",
                                      text=str(obj[0]), depress=False).mesh_to_select = obj[0]
                     # show verts
                     row.label(text=str(obj[1]))
@@ -93,23 +93,23 @@ class NTHG3D_PT_stats_panel(bpy.types.Panel):
                         row.label(text=str(obj[2]))
                     else:
                         row.label(text="± %i" % (obj[2]))
-            # show total stats
+            # show total polycount
             box = layout.box()
             row = box.row(align=True)
             row.label(text="Total")
-            if total_stats_table != 0:
-                row.label(text="%i" % (total_stats_table[0]))
-                row.label(text="%i" % (total_stats_table[1]))
+            if total_polycount_table != 0:
+                row.label(text="%i" % (total_polycount_table[0]))
+                row.label(text="%i" % (total_polycount_table[1]))
             else:
                 row.label(text="-")
                 row.label(text="-")
 
 
-class NTHG3D_OT_stats_panel_table(bpy.types.Operator):
-    bl_idname = "nothing3d.stats_panel_table"
-    bl_label = "Show Stats in Scene properties panel"
-    bl_description = "Show Stats in Scene properties panel"
-    show_stats: BoolProperty(default=True)
+class NTHG3D_OT_polycount_panel_table(bpy.types.Operator):
+    bl_idname = "nothing3d.polycount_panel_table"
+    bl_label = "Show polycount in Scene properties panel"
+    bl_description = "Show polycount in Scene properties panel"
+    show_polycount: BoolProperty(default=True)
     mesh_to_select: StringProperty()
 
     @classmethod
@@ -117,7 +117,7 @@ class NTHG3D_OT_stats_panel_table(bpy.types.Operator):
         return len(context.view_layer.objects) > 0 and bpy.context.view_layer.objects.active.mode == 'OBJECT'
 
     def execute(self, context):
-        context.scene.are_stats_enabled = self.show_stats
+        context.scene.is_polycount_enable = self.show_polycount
         if self.mesh_to_select is not "":
             context.view_layer.objects.active = bpy.data.objects[str(
                 self.mesh_to_select)]
@@ -126,8 +126,8 @@ class NTHG3D_OT_stats_panel_table(bpy.types.Operator):
 
 
 classes = (
-    NTHG3D_PT_stats_panel,
-    NTHG3D_OT_stats_panel_table,
+    NTHG3D_PT_polycount_panel,
+    NTHG3D_OT_polycount_panel_table,
 )
 
 
@@ -135,7 +135,7 @@ def register():
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
-    Scene.are_stats_enabled = BoolProperty(default=False)
+    Scene.is_polycount_enable = BoolProperty(default=False)
 
 
 def unregister():
@@ -143,7 +143,7 @@ def unregister():
     for cls in reversed(classes):
         unregister_class(cls)
 
-    del Scene.are_stats_enabled
+    del Scene.is_polycount_enable
 
 
 if __name__ == "__main__":

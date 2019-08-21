@@ -15,7 +15,7 @@ bl_info = {
     - and finally all Blender community and the ones I forget.
 """
 
-modulesNames = ['materials', 'meshes', 'selection_sets', 'stats', 'uvs']
+modulesNames = ['materials', 'meshes', 'polycount', 'selection_sets', 'uvs']
 
 modulesFullNames = []
 for currentModuleName in modulesNames:
