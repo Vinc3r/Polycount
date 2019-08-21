@@ -34,7 +34,7 @@ def calculate_mesh_polycount():
             area += face.calc_area()
             if len(face.edges) > 4:
                 has_ngon = True
-        area = round(area,1)
+        area = round(area, 1)
         # adding obj polycount to total count
         total_tris_in_selection += tris_count
         total_verts_in_selection += verts_count
@@ -48,10 +48,25 @@ def calculate_mesh_polycount():
             area
         ])
         bm.free()
-    total_polycount = [total_verts_in_selection, total_tris_in_selection, total_area]
+    total_polycount = [total_verts_in_selection,
+                       total_tris_in_selection, total_area]
+
     def sortList(item):
-        return item[0].casefold()
-    objects_polycount.sort(key=sortList)
+        polycount_sorting = bpy.context.scene.polycount_sorting
+        if polycount_sorting == 'TRIS':
+            # check default first
+            return item[2]
+        elif polycount_sorting == 'NAME':
+            return item[0].casefold()
+        elif polycount_sorting == 'VERTS':
+            return item[1]
+        elif polycount_sorting == 'AREA':
+            return item[4]
+        else:
+            # tris by default
+            return item[2]
+    objects_polycount.sort(
+        key=sortList, reverse=bpy.context.scene.polycount_sorting_reversed)
 
     return objects_polycount, total_polycount
 
@@ -81,10 +96,18 @@ class NTHG3D_PT_polycount_panel(bpy.types.Panel):
             col_flow = box.column_flow(
                 columns=0, align=True)
             row = col_flow.row(align=True)
-            row.label(text="Object")
-            row.label(text="Verts")
-            row.label(text="Tris")
-            row.label(text="Area")
+            # row.label(text="Object")
+            row.operator("nothing3d.polycount_panel_table",
+                         text="Object").poly_sort = 'NAME'
+            # row.label(text="Verts")
+            row.operator("nothing3d.polycount_panel_table",
+                         text="Verts").poly_sort = 'VERTS'
+            # row.label(text="Tris")
+            row.operator("nothing3d.polycount_panel_table",
+                         text="Tris").poly_sort = 'TRIS'
+            # row.label(text="Area")
+            row.operator("nothing3d.polycount_panel_table",
+                         text="Area").poly_sort = 'AREA'
             if len(polycount_table) > 0:
                 for obj in polycount_table:
                     row = col_flow.row(align=True)
@@ -123,6 +146,12 @@ class NTHG3D_OT_polycount_panel_table(bpy.types.Operator):
     bl_description = "Show polycount in Scene properties panel"
     show_polycount: BoolProperty(default=True)
     mesh_to_select: StringProperty()
+    poly_sort: EnumProperty(items=[
+        ('NAME', "Name", ""),
+        ('VERTS', "Verts", ""),
+        ('TRIS', "Tris", ""),
+        ('AREA', "Area", "")
+    ], default='TRIS')
 
     @classmethod
     def poll(cls, context):
@@ -132,6 +161,18 @@ class NTHG3D_OT_polycount_panel_table(bpy.types.Operator):
 
     def execute(self, context):
         context.scene.is_polycount_enable = self.show_polycount
+        if self.poly_sort == context.scene.polycount_sorting:
+            # user can toogle sorting by clicking multiple times on button
+            context.scene.polycount_sorting_reversed = not context.scene.polycount_sorting_reversed
+        else:
+            # switching the sort key
+            if self.poly_sort == 'NAME':
+                # user expect naming sort starting from a to b
+                context.scene.polycount_sorting_reversed = False
+            else:
+                # but numbers starting from higher to lower
+                context.scene.polycount_sorting_reversed = True
+            context.scene.polycount_sorting = self.poly_sort
         if self.mesh_to_select is not "":
             context.view_layer.objects.active = bpy.data.objects[str(
                 self.mesh_to_select)]
@@ -150,6 +191,13 @@ def register():
     for cls in classes:
         register_class(cls)
     Scene.is_polycount_enable = BoolProperty(default=False)
+    Scene.polycount_sorting = EnumProperty(items=[
+        ('NAME', "Name", ""),
+        ('VERTS', "Verts", ""),
+        ('TRIS', "Tris", ""),
+        ('AREA', "Area", "")
+    ], default='TRIS')
+    Scene.polycount_sorting_reversed = BoolProperty(default=True)
 
 
 def unregister():
@@ -157,6 +205,8 @@ def unregister():
     for cls in reversed(classes):
         unregister_class(cls)
 
+    del Scene.polycount_sorting_reversed
+    del Scene.polycount_sorting
     del Scene.is_polycount_enable
 
 
