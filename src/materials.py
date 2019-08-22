@@ -50,6 +50,55 @@ def set_active_texture(type="albedo"):
     return {'FINISHED'}
 
 
+def gltf_fix_colorspace():
+    objects_selected = selection_sets.meshes_with_materials()
+
+    for obj in objects_selected:
+        mesh = obj.data
+        for mat in mesh.materials:
+            if mat.use_nodes:
+                for node in mat.node_tree.nodes:
+                    if node.type != 'TEX_IMAGE' or not node.image:
+                        # node have to pass first tests
+                        continue
+                    for out in node.outputs:
+                        if out.type != 'RGBA':
+                            # output have to pass test
+                            continue
+                        for link in out.links:
+                            if link.to_node.type == 'BSDF_PRINCIPLED':
+                                node.image.colorspace_settings.name = 'sRGB'
+                            else:
+                                node.image.colorspace_settings.name = 'Non-Color'
+    return {'FINISHED'}
+
+def gltf_fix_uvnode_naming(operator):
+    objects_selected = selection_sets.meshes_with_materials()
+    materials_error = ""
+
+    for obj in objects_selected:
+        mesh = obj.data
+        for mat in mesh.materials:
+            if mat.use_nodes:
+                naming_issue = False
+                for node in mat.node_tree.nodes:
+                    if node.type != 'UVMAP' or node.uv_map == '':
+                        # node have to pass first tests
+                        continue
+                    # get gltf UV chan id: "TEXCOORD_0" give us "0" as int
+                    channel_number = str(node.uv_map)[-1:]
+                    try:
+                        node.uv_map = obj.data.uv_layers[int(channel_number)].name
+                    except:
+                        naming_issue = True
+                if naming_issue:
+                    materials_error += "{}, ".format(mat.name)
+    if materials_error != "":
+        # removing ", " charz
+        operator.report({'WARNING'}, "Can't be parsed: {}".format(materials_error[:-2]))
+    return {'FINISHED'}
+
+
 def gltf_mute_textures(exclude="albedo"):
 
     # no_muting_condition = [node.type, node.output.type, node.output.link.to_node.type]
@@ -78,16 +127,17 @@ def gltf_mute_textures(exclude="albedo"):
                         continue
                     # muting by default, then unmute exception
                     node.mute = True
-                    for out in node.outputs:
-                        if out.type != no_muting_condition[1]:
-                            # output have to pass test
-                            continue
-                        for link in out.links:
-                            if link.to_node.type != no_muting_condition[2]:
-                                # link have to pass test
+                    if exclude != "mute":
+                        for out in node.outputs:
+                            if out.type != no_muting_condition[1]:
+                                # output have to pass test
                                 continue
-                            # ok we're sure about this node, let's unmute
-                            node.mute = False
+                            for link in out.links:
+                                if link.to_node.type != no_muting_condition[2]:
+                                    # link have to pass test
+                                    continue
+                                # ok we're sure about this node, let's unmute
+                                node.mute = False
     return {'FINISHED'}
 
 
@@ -134,14 +184,23 @@ class NTHG3D_PT_material_panel(bpy.types.Panel):
         row = grid.row(align=True)
         row.operator("nothing3d.material_gltf_mute",
                      text="Emissive").exclude = "emit"
-        row = box.row(align=True)
+        grid = box.grid_flow(
+            row_major=True, even_columns=True, even_rows=True, align=True)
+        row = grid.row(align=True)
         row.operator("nothing3d.material_gltf_mute",
-                     text="Unmute").exclude = "unmute"
+                     text="Mute all").exclude = "mute"
+        row = grid.row(align=True)
+        row.operator("nothing3d.material_gltf_mute",
+                     text="Unmute all").exclude = "unmute"
         # fixing
         row = box.row()
         row.label(text="Fix:")
-        row.label(text="color space")
-        #row.operator("nothing3d.material_todo", text="color space")
+        grid = box.grid_flow(
+            row_major=True, columns = 2, even_columns=True, even_rows=True, align=True)
+        row = grid.row(align=True)
+        row.operator("nothing3d.material_gltf_colorspace", text="Colorspace")
+        row = grid.row(align=True)
+        row.operator("nothing3d.material_gltf_uvnode_naming", text="UV nodes")
 
 
 class NTHG3D_OT_material_backface(bpy.types.Operator):
@@ -165,6 +224,24 @@ class NTHG3D_OT_material_gltf_mute(bpy.types.Operator):
         gltf_mute_textures(self.exclude)
         return {'FINISHED'}
 
+class NTHG3D_OT_material_gltf_colorspace(bpy.types.Operator):
+    bl_idname = "nothing3d.material_gltf_colorspace"
+    bl_label = "Fix gltf textures colorspace"
+    bl_description = "Fix gltf textures colorspace"
+
+    def execute(self, context):
+        gltf_fix_colorspace()
+        return {'FINISHED'}
+
+class NTHG3D_OT_material_gltf_uvnode_naming(bpy.types.Operator):
+    bl_idname = "nothing3d.material_gltf_uvnode_naming"
+    bl_label = "Relink TEXCOORD_x naming to actual mesh uv names"
+    bl_description = "Relink TEXCOORD_x naming to actual mesh uv names"
+
+    def execute(self, context):
+        gltf_fix_uvnode_naming(self)
+        return {'FINISHED'}
+
 
 class NTHG3D_OT_material_active_texture(bpy.types.Operator):
     bl_idname = "nothing3d.material_active_texture"
@@ -182,6 +259,8 @@ classes = (
     NTHG3D_OT_material_backface,
     NTHG3D_OT_material_gltf_mute,
     NTHG3D_OT_material_active_texture,
+    NTHG3D_OT_material_gltf_colorspace,
+    NTHG3D_OT_material_gltf_uvnode_naming,
 )
 
 

@@ -61,12 +61,11 @@ def report_no_uv(channel=0):
         is_all_good = True
     else:
         for obj in objects_no_uv:
-            obj_no_uv_names += "{}".format(obj.name)
-            if objects_no_uv.index(obj) < (len(objects_no_uv) - 1):
-                obj_no_uv_names += ", "
+            obj_no_uv_names += "{}, ".format(obj.name)
         message = "{} {}".format(message_suffix, obj_no_uv_names)
 
-    return message, is_all_good
+    # removing last ", " charz
+    return message[:-2], is_all_good
 
 
 def box_mapping(size=1.0):
