@@ -27,14 +27,17 @@ def calculate_mesh_polycount():
         bm.from_mesh(obj.data)
         bm.faces.ensure_lookup_table()
         tris_count = len(bm.calc_loop_triangles())
+        exceed_16bmesh_buffer_limit = False
         verts_count = len(bm.verts)
+        if verts_count > 65536:
+            exceed_16bmesh_buffer_limit = True
         has_ngon = False
         area = 0
         for face in bm.faces:
             area += face.calc_area()
             if len(face.edges) > 4:
                 has_ngon = True
-        area = round(area, 1)
+        area = round(area, 2)
         # adding obj polycount to total count
         total_tris_in_selection += tris_count
         total_verts_in_selection += verts_count
@@ -45,7 +48,8 @@ def calculate_mesh_polycount():
             verts_count,
             tris_count,
             has_ngon,
-            area
+            area,
+            exceed_16bmesh_buffer_limit
         ])
         bm.free()
     total_polycount = [total_verts_in_selection,
@@ -119,12 +123,18 @@ class NTHG3D_PT_polycount_panel(bpy.types.Panel):
                         row.operator("nothing3d.polycount_panel_table",
                                      text=str(obj[0]), depress=False).mesh_to_select = obj[0]
                     # show verts
-                    row.label(text=str(obj[1]))
+                    if not obj[5]:
+                        # no mesh vertex buffer limit
+                        row.label(text=str(obj[1]))
+                    else:
+                        row.label(text="%i*" % obj[1])
                     # show tri & ngon
                     if not obj[3]:
+                        # no ngons
                         row.label(text=str(obj[2]))
                     else:
                         row.label(text="± %i" % (obj[2]))
+                    # show area
                     row.label(text=str(obj[4]))
             # show total polycount
             box = layout.box()
