@@ -73,7 +73,11 @@ class Hello_OT_HelloWorldPanel(bpy.types.Operator):
     def execute(self, context):
         if self.action:
             print("user interaction")
-            thats_a_default_array = do_something_on_meshes()
+            function_called = do_something_on_meshes()
+            # does not work :'()
+            thats_a_default_array = function_called
+            # appears to be read-only:
+            # context.scene.global_value = function_called
             self.action = False
         return {'FINISHED'}
 
@@ -81,11 +85,14 @@ def register():
     bpy.utils.register_class(Hello_PT_HelloWorldPanel)
     bpy.utils.register_class(Hello_OT_HelloWorldPanel)
 
+    Scene.global_value = []
+
 
 def unregister():
     bpy.utils.unregister_class(Hello_OT_HelloWorldPanel)
     bpy.utils.unregister_class(Hello_PT_HelloWorldPanel)
 
+    del Scene.global_value
 
 if __name__ == "__main__":
     register()
