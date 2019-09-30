@@ -18,24 +18,26 @@ from bpy.props import (
     StringProperty
 )
 
+global thats_a_default_array
 thats_a_default_array = []
 
 def do_something_on_meshes():
     total_tris_in_selection = 0
     total_verts_in_selection = 0
+    local_array = []
 
     # calculate only selected objects
     for obj in [o for o in bpy.context.selected_objects if o.type == 'MESH']:
         bm = bmesh.new()
         bm.from_mesh(obj.data)
         verts_count = len(bm.verts)
-        thats_a_default_array.append([
+        local_array.append([
             obj.name,
             verts_count
         ])
         bm.free()
 
-    return {'FINISHED'}
+    return local_array
 
 
 class Hello_PT_HelloWorldPanel(bpy.types.Panel):
@@ -50,17 +52,15 @@ class Hello_PT_HelloWorldPanel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
 
-        obj = context.object
-
         row = layout.row()
         row.label(text="objects list: ")
         row = layout.row()
-        row.label(text=obj.name)
-        row = layout.row()
         if len(thats_a_default_array) == 0:
-            row.label(text="NEINNEIN")
+            row.label(text="no objects names to show")
         else:
-            row.label(text="JAJAJAJ")
+            for data in thats_a_default_array:
+                row.label(text=str(data[0]))
+                row.label(text=str(data[1]))
 
         row = layout.row()
         row.operator("hello.do_something", text="Refresh", icon="FILE_REFRESH").action = True
@@ -73,7 +73,7 @@ class Hello_OT_HelloWorldPanel(bpy.types.Operator):
     def execute(self, context):
         if self.action:
             print("user interaction")
-            do_something_on_meshes()
+            thats_a_default_array = do_something_on_meshes()
             self.action = False
         return {'FINISHED'}
 
