@@ -38,7 +38,7 @@ def calculate_mesh_polycount():
         tris_count = len(bm.calc_loop_triangles())
         exceed_16bmesh_buffer_limit = False
         verts_count = len(bm.verts)
-        if verts_count > 65536:
+        if verts_count > 65535:
             exceed_16bmesh_buffer_limit = True
         has_ngon = False
         area = 0
