@@ -11,7 +11,7 @@ A Blender 2.8 addon helping to know about your scene polycount.
 3. remove previous installation if needed (search *polycount* to easily find it)
 4. install by using *Install from File...* in *Blender User Preferences* > *Add-ons* tab
 
-Polycount is now available in Properties > Scene > Polycount
+Polycount is now available in `Properties` > `Scene` > `Polycount` tab.
 
 ![polycount](_readme-assets_/polycount.png)
 

@@ -3,7 +3,7 @@ bl_info = {
     "description": "Know about your scene polycount",
     "author": "Vincent (V!nc3r) Lamy",
     "category": "Scene",
-    "wiki_url": 'https://github.com/Vinc3r/Polycount/wiki',
+    "wiki_url": 'https://github.com/Vinc3r/Polycount#polycount',
     "tracker_url": 'https://github.com/Vinc3r/Polycount/issues',
     "version": (1, 1, 0),
     "blender": (2, 80, 0)
