@@ -1,5 +1,9 @@
 # Polycount changelog
 
+## In production
+
+current development additions:
+- vertex buffer limit fixed (65 535 in place of 65 536, [testfile](https://github.com/Vinc3r/BlenderScripts/blob/master/_testFiles_/16b-mesh-vertex-buffer-limitation.glb) to play with [sandbox](https://sandbox.babylonjs.com/)) 
 
 ## [v1.1.0](https://github.com/Vinc3r/Polycount/releases/tag/v1.1.0)
 
