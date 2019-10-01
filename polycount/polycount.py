@@ -119,7 +119,7 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
 
         row = layout.row()
         row.operator("polycount.user_interaction",
-                     text="Refresh (last: {})".format(last_user_refresh), icon="FILE_REFRESH")
+                     text="Refresh (last: {})".format(last_user_refresh), icon="FILE_REFRESH").refresh = True
         row = layout.row()
         row.prop(context.scene, "use_selection", text="use selection")
         box = layout.box()
@@ -227,7 +227,7 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
         ('TRIS', "Tris", ""),
         ('AREA', "Area", "")
     ], default='TRIS')
-    do_not_sort: StringProperty(default="nope")
+    refresh: BoolProperty(default=False)
 
     @classmethod
     def poll(cls, context):
@@ -240,21 +240,26 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
         global polycount_sorting_ascending
         global polycount_sorting
 
-        if self.make_active is not "" and \
-                bpy.data.objects.get(str(self.make_active)) is not None:
-            # if we only want to make active an object, no need to change sorting
-            context.view_layer.objects.active = bpy.data.objects[str(
-                self.make_active)]
+        if self.refresh:
+            # no need to check shits if we only want data refresh
+            self.refresh = False
+            pass
         else:
-            if last_user_refresh is not "never":
-                if self.poly_sort == polycount_sorting:
-                    # if we want to toogle sorting type
-                    polycount_sorting_ascending = not polycount_sorting_ascending
-                else:
-                    # if we change sort
-                    polycount_sorting = self.poly_sort
-        # resetting the active param
-        self.make_active = ""
+            if self.make_active is not "" and \
+                    bpy.data.objects.get(str(self.make_active)) is not None:
+                # if we only want to make active an object, no need to change sorting
+                context.view_layer.objects.active = bpy.data.objects[str(
+                    self.make_active)]
+            else:
+                if last_user_refresh is not "never":
+                    if self.poly_sort == polycount_sorting:
+                        # if we want to toogle sorting type
+                        polycount_sorting_ascending = not polycount_sorting_ascending
+                    else:
+                        # if we change sort
+                        polycount_sorting = self.poly_sort
+            # resetting the active param
+            self.make_active = ""
 
         # doing the calculation
         calculate_mesh_polycount()

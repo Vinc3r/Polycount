@@ -9,6 +9,7 @@ Current development additions, available through [last source code](https://gith
 - deleting an object no longer thrown an error
 - calculation can now be made even in edit mode
 - user can choose if polycount is made in selection or whole scene
+- resfresh button no longer put mess in sort
 
 ## [v1.1.0](https://github.com/Vinc3r/Polycount/releases/tag/v1.1.0)
 
