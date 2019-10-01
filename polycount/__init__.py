@@ -5,11 +5,11 @@ bl_info = {
     "category": "Scene",
     "wiki_url": 'https://github.com/Vinc3r/Polycount#polycount',
     "tracker_url": 'https://github.com/Vinc3r/Polycount/issues',
-    "version": (1, 1, 0),
+    "version": (1, 2, 0),
     "blender": (2, 80, 0)
 }
 
-modulesNames = ['polycount', 'selection_sets']
+modulesNames = ['polycount']
 
 modulesFullNames = []
 for currentModuleName in modulesNames:
