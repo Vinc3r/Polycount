@@ -6,6 +6,9 @@ Current development additions, available through [last source code](https://gith
 - vertex buffer limit fixed (65 535 in place of 65 536, [testfile](https://github.com/Vinc3r/BlenderScripts/blob/master/_testFiles_/16b-mesh-vertex-buffer-limitation.glb) to play with [sandbox](https://sandbox.babylonjs.com/)) 
 - an arrow show the current sorting way
 - fix active button doing mess in sort
+- deleting an object no longer thrown an error
+- calculation can now be made even in edit mode
+- user can choose if polycount is made in selection or whole scene
 
 ## [v1.1.0](https://github.com/Vinc3r/Polycount/releases/tag/v1.1.0)
 

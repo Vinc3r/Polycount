@@ -1,6 +1,7 @@
 import bpy
 import bmesh
 import datetime
+from bpy.types import Scene
 from bpy.props import (
     EnumProperty,
     FloatProperty,
@@ -31,16 +32,21 @@ def calculate_mesh_polycount():
     total_tris_in_selection = 0
     total_verts_in_selection = 0
     total_area = 0
+    objects_to_compute = []
 
-    current_user_selection = [
-        o for o in bpy.context.selected_objects if o.type == 'MESH']
+    if bpy.context.scene.use_selection:
+        objects_to_compute = [
+            o for o in bpy.context.selected_objects if o.type == 'MESH']
+    else:
+        objects_to_compute = [
+            o for o in bpy.context.view_layer.objects if o.type == 'MESH']
 
-    if last_selected_objects != current_user_selection:
+    if last_selected_objects != objects_to_compute:
         # and reset the table
         objects_polycount = []
         total_polycount = []
         # calculate only selected objects
-        for obj in current_user_selection:
+        for obj in objects_to_compute:
             bm = bmesh.new()
             bm.from_mesh(obj.data)
             bm.faces.ensure_lookup_table()
@@ -72,8 +78,8 @@ def calculate_mesh_polycount():
             bm.free()
         total_polycount = [total_verts_in_selection,
                            total_tris_in_selection, total_area]
-        last_selected_objects = current_user_selection
-    
+        last_selected_objects = objects_to_compute
+
     def sortList(item):
         if polycount_sorting == 'NAME':
             return item[0].casefold()
@@ -114,6 +120,8 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
         row = layout.row()
         row.operator("polycount.user_interaction",
                      text="Refresh (last: {})".format(last_user_refresh), icon="FILE_REFRESH")
+        row = layout.row()
+        row.prop(context.scene, "use_selection", text="use selection")
         box = layout.box()
         col_flow = box.column_flow(
             columns=0, align=True)
@@ -233,7 +241,7 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
         global polycount_sorting
 
         if self.make_active is not "" and \
-            bpy.data.objects.get(str(self.make_active)) is not None:
+                bpy.data.objects.get(str(self.make_active)) is not None:
             # if we only want to make active an object, no need to change sorting
             context.view_layer.objects.active = bpy.data.objects[str(
                 self.make_active)]
@@ -268,12 +276,15 @@ def register():
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
+    Scene.use_selection = BoolProperty(default=True)
 
 
 def unregister():
     from bpy.utils import unregister_class
     for cls in reversed(classes):
         unregister_class(cls)
+
+    del Scene.use_selection
 
 
 if __name__ == "__main__":
