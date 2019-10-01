@@ -5,7 +5,7 @@ bl_info = {
     "category": "Scene",
     "wiki_url": 'https://github.com/Vinc3r/Polycount/wiki',
     "tracker_url": 'https://github.com/Vinc3r/Polycount/issues',
-    "version": (1, 0, 0),
+    "version": (1, 1, 0),
     "blender": (2, 80, 0)
 }
 
