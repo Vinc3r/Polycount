@@ -120,7 +120,7 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
             for obj in objects_polycount:
                 row = col_flow.row(align=True)
                 # show if active
-                if context.view_layer.objects.active.name == str(obj[0]):
+                if context.view_layer.objects.active and context.view_layer.objects.active.name == str(obj[0]):
                     row.operator("polycount.user_interaction",
                                     text=str(obj[0]), depress=True).mesh_to_select = obj[0]
                 else:
