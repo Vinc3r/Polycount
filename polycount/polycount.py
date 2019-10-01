@@ -22,6 +22,7 @@ def calculate_mesh_polycount():
     # using global variables
     global objects_polycount
     global total_polycount
+    global last_user_refresh
     # and reset the table
     objects_polycount = []
     total_polycount = []
@@ -78,6 +79,7 @@ def calculate_mesh_polycount():
         else:
             # tris by default
             return item[2]
+            
     objects_polycount.sort(
         key=sortList, reverse=bpy.context.scene.polycount_sorting_reversed)
 
@@ -104,28 +106,63 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
         col_flow = box.column_flow(
             columns=0, align=True)
         row = col_flow.row(align=True)
-        # row.label(text="Object")
-        row.operator("polycount.user_interaction",
-                        text="Object").poly_sort = 'NAME'
-        # row.label(text="Verts")
-        row.operator("polycount.user_interaction",
-                        text="Verts").poly_sort = 'VERTS'
-        # row.label(text="Tris")
-        row.operator("polycount.user_interaction",
-                        text="Tris").poly_sort = 'TRIS'
-        # row.label(text="Area")
-        row.operator("polycount.user_interaction",
-                        text="Area").poly_sort = 'AREA'
+        polycount_sorting = context.scene.polycount_sorting
+        polycount_sorting_reversed = context.scene.polycount_sorting_reversed
+        # Object button
+        if polycount_sorting == 'NAME':
+            if polycount_sorting_reversed:
+                row.operator("polycount.user_interaction",
+                                text="Object", icon="TRIA_UP").poly_sort = 'NAME'
+            else:
+                row.operator("polycount.user_interaction",
+                                text="Object", icon="TRIA_DOWN").poly_sort = 'NAME'
+        else:
+            row.operator("polycount.user_interaction",
+                            text="Object").poly_sort = 'NAME'
+        # Verts button
+        if polycount_sorting == 'VERTS':
+            if polycount_sorting_reversed:
+                row.operator("polycount.user_interaction",
+                                text="Verts", icon="TRIA_DOWN").poly_sort = 'VERTS'
+            else:
+                row.operator("polycount.user_interaction",
+                                text="Verts", icon="TRIA_UP").poly_sort = 'VERTS'
+        else:
+            row.operator("polycount.user_interaction",
+                            text="Verts").poly_sort = 'VERTS'
+        # Tris button
+        if polycount_sorting == 'TRIS':
+            if polycount_sorting_reversed:
+                row.operator("polycount.user_interaction",
+                                text="Tris", icon="TRIA_DOWN").poly_sort = 'TRIS'
+            else:
+                row.operator("polycount.user_interaction",
+                                text="Tris", icon="TRIA_UP").poly_sort = 'TRIS'
+        else:
+            row.operator("polycount.user_interaction",
+                            text="Tris").poly_sort = 'TRIS'
+        # Area button
+        if polycount_sorting == 'AREA':
+            if polycount_sorting_reversed:
+                row.operator("polycount.user_interaction",
+                                text="Area", icon="TRIA_DOWN").poly_sort = 'AREA'
+            else:
+                row.operator("polycount.user_interaction",
+                                text="Area", icon="TRIA_UP").poly_sort = 'AREA'
+        else:
+            row.operator("polycount.user_interaction",
+                            text="Area").poly_sort = 'AREA'
+
         if len(objects_polycount) > 0:
             for obj in objects_polycount:
                 row = col_flow.row(align=True)
                 # show if active
                 if context.view_layer.objects.active and context.view_layer.objects.active.name == str(obj[0]):
                     row.operator("polycount.user_interaction",
-                                    text=str(obj[0]), depress=True).mesh_to_select = obj[0]
+                                    text=str(obj[0]), depress=True).make_active = obj[0]
                 else:
                     row.operator("polycount.user_interaction",
-                                    text=str(obj[0]), depress=False).mesh_to_select = obj[0]
+                                    text=str(obj[0]), depress=False).make_active = obj[0]
                 # show verts
                 if not obj[5]:
                     # no mesh vertex buffer limit
@@ -158,7 +195,7 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
     bl_idname = "polycount.user_interaction"
     bl_label = "Show polycount in Scene properties panel"
     bl_description = "Show polycount in Scene properties panel"
-    mesh_to_select: StringProperty()
+    make_active: StringProperty()
     poly_sort: EnumProperty(items=[
         ('NAME', "Name", ""),
         ('VERTS', "Verts", ""),
@@ -173,10 +210,11 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
             bpy.context.view_layer.objects.active.mode == 'OBJECT'
 
     def execute(self, context):        
-        now = datetime.datetime.now()
+        now = datetime.datetime.now()        
         global last_user_refresh
         last_user_refresh = "{:02d}:{:02d}".format(now.hour, now.minute)
-        if self.poly_sort == context.scene.polycount_sorting:
+
+        if self.poly_sort == context.scene.polycount_sorting and self.make_active == "":
             # user can toogle sorting by clicking multiple times on button
             context.scene.polycount_sorting_reversed = not context.scene.polycount_sorting_reversed
         else:
@@ -188,9 +226,9 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
                 # but numbers starting from higher to lower
                 context.scene.polycount_sorting_reversed = True
             context.scene.polycount_sorting = self.poly_sort
-        if self.mesh_to_select is not "":
+        if self.make_active is not "":
             context.view_layer.objects.active = bpy.data.objects[str(
-                self.mesh_to_select)]
+                self.make_active)]
 
         calculate_mesh_polycount()
 
