@@ -40,9 +40,40 @@ def calculate_mesh_polycount():
     else:
         objects_to_compute = [
             o for o in bpy.context.view_layer.objects if o.type == 'MESH']
-
+            
+    print("-----------------")
     if last_selected_objects != objects_to_compute:
-        # and reset the table
+        """
+        trying to get rid of instances
+        """
+        # objects_to_compute_name = []
+        # for obj in objects_to_compute:
+        #     # bypassing instances, as polycount is obviously the same
+        #     objects_to_compute_name.append(obj.name)
+        # objects_to_compute_name.sort(reverse=False)
+        # instance_list = []
+        # for name in objects_to_compute_name:
+        #     current_object = bpy.data.objects.get(name)
+        #     if current_object.data.users == 1:
+        #         # no instance
+        #         continue
+        #     if current_object.data.name not in instance_list:
+        #         print("not in")
+        #         instance_list.append(current_object.data.name)
+        #     print("instance_list: ",instance_list)
+        #     for existing_name in instance_list:
+        #         # if original mesh on the list, we can erase this current instance
+        #         print("3")
+        #         print("current_object.name:",current_object.name)
+        #         print("existing_name",existing_name)
+        #         if str(current_object.data.name) == str(existing_name):
+        #             print("pipipipipi")
+        #             continue
+        #         print("cacacacaccaca")
+        #         objects_to_compute.remove(current_object)
+        # print("final")
+        # print(objects_to_compute)
+        # reset the table
         objects_polycount = []
         total_polycount = []
         # calculate only selected objects
