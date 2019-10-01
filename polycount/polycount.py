@@ -75,9 +75,9 @@ def calculate_mesh_polycount():
     return objects_polycount, total_polycount
 
 
-class NTHG3D_PT_polycount_panel(bpy.types.Panel):
+class POLYCOUNT_PT_gui(bpy.types.Panel):
     bl_label = "Polycount"
-    bl_idname = "NTHG3D_PT_polycount_panel"
+    bl_idname = "POLYCOUNT_PT_gui"
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
     bl_context = "scene"
@@ -89,11 +89,11 @@ class NTHG3D_PT_polycount_panel(bpy.types.Panel):
         if not scene.is_polycount_enable:
             # show enable button
             row = layout.row()
-            row.operator("nothing3d.polycount_panel_table",
+            row.operator("polycount.user_interaction",
                          text="Enable", depress=False).show_polycount = True
         else:
             row = layout.row()
-            row.operator("nothing3d.polycount_panel_table",
+            row.operator("polycount.user_interaction",
                          text="Disable", depress=True).show_polycount = False
             polycount_table, total_polycount_table = calculate_mesh_polycount()
             box = layout.box()
@@ -101,26 +101,26 @@ class NTHG3D_PT_polycount_panel(bpy.types.Panel):
                 columns=0, align=True)
             row = col_flow.row(align=True)
             # row.label(text="Object")
-            row.operator("nothing3d.polycount_panel_table",
+            row.operator("polycount.user_interaction",
                          text="Object").poly_sort = 'NAME'
             # row.label(text="Verts")
-            row.operator("nothing3d.polycount_panel_table",
+            row.operator("polycount.user_interaction",
                          text="Verts").poly_sort = 'VERTS'
             # row.label(text="Tris")
-            row.operator("nothing3d.polycount_panel_table",
+            row.operator("polycount.user_interaction",
                          text="Tris").poly_sort = 'TRIS'
             # row.label(text="Area")
-            row.operator("nothing3d.polycount_panel_table",
+            row.operator("polycount.user_interaction",
                          text="Area").poly_sort = 'AREA'
             if len(polycount_table) > 0:
                 for obj in polycount_table:
                     row = col_flow.row(align=True)
                     # show if active
                     if context.view_layer.objects.active.name == str(obj[0]):
-                        row.operator("nothing3d.polycount_panel_table",
+                        row.operator("polycount.user_interaction",
                                      text=str(obj[0]), depress=True).mesh_to_select = obj[0]
                     else:
-                        row.operator("nothing3d.polycount_panel_table",
+                        row.operator("polycount.user_interaction",
                                      text=str(obj[0]), depress=False).mesh_to_select = obj[0]
                     # show verts
                     if not obj[5]:
@@ -150,8 +150,8 @@ class NTHG3D_PT_polycount_panel(bpy.types.Panel):
                 row.label(text="-")
 
 
-class NTHG3D_OT_polycount_panel_table(bpy.types.Operator):
-    bl_idname = "nothing3d.polycount_panel_table"
+class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
+    bl_idname = "polycount.user_interaction"
     bl_label = "Show polycount in Scene properties panel"
     bl_description = "Show polycount in Scene properties panel"
     show_polycount: BoolProperty(default=True)
@@ -191,8 +191,8 @@ class NTHG3D_OT_polycount_panel_table(bpy.types.Operator):
 
 
 classes = (
-    NTHG3D_PT_polycount_panel,
-    NTHG3D_OT_polycount_panel_table,
+    POLYCOUNT_PT_gui,
+    POLYCOUNT_OT_user_interaction,
 )
 
 

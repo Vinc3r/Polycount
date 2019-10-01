@@ -1,21 +1,15 @@
 bl_info = {
-    "name": "Nothing-is-3D tools",
-    "description": "Some scripts 3D realtime workflow oriented.",
+    "name": "Polycount",
+    "description": "Know about your scene polycount",
     "author": "Vincent (V!nc3r) Lamy",
-    "category": "Object",
-    "wiki_url": 'https://github.com/Vinc3r/BlenderScripts',
-    "tracker_url": 'https://github.com/Vinc3r/BlenderScripts/issues',
-    "version": (1, 2, 0),
+    "category": "Scene",
+    "wiki_url": 'https://github.com/Vinc3r/Polycount/wiki',
+    "tracker_url": 'https://github.com/Vinc3r/Polycount/issues',
+    "version": (1, 0, 0),
     "blender": (2, 80, 0)
 }
 
-"""A bunch of Thanks for some snippets, ideas, inspirations, to:
-    - of course, Ton & all Blender devs,
-    - Henri Hebeisen (henri-hebeisen.com), Pitiwazou (pitiwazou.com), Pistiwique (github.com/pistiwique),
-    - and finally all Blender community and the ones I forget.
-"""
-
-modulesNames = ['materials', 'meshes', 'polycount', 'selection_sets', 'uvs']
+modulesNames = ['polycount', 'selection_sets']
 
 modulesFullNames = []
 for currentModuleName in modulesNames:
