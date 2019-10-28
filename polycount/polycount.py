@@ -38,7 +38,7 @@ def calculate_mesh_polycount():
     else:
         objects_to_compute = [
             o for o in bpy.context.view_layer.objects if o.type == 'MESH']
-            
+
     print("-----------------")
 
     """
@@ -72,6 +72,19 @@ def calculate_mesh_polycount():
     # print("final")
     # print(objects_to_compute)
     # reset the table
+    """
+        trying to split edges by angle to get correct polycount
+            - have to find out how to list only edges where angle get out of user value (autosmooth)
+            https://blender.stackexchange.com/questions/80907/how-to-get-angle-of-edge-python
+    """
+    # import bmesh
+    # bm = bmesh.new()
+    # bm.from_mesh(bpy.context.active_object.data)
+    # print("vertex: {}".format(len(bm.verts)))
+    # bmesh.ops.split_edges(bm, edges=bm.edges)
+    # print("real vertex: {}".format(len(bm.verts)))
+    # bm.free()
+
     objects_polycount = []
     total_polycount = []
     # calculate only selected objects
@@ -106,7 +119,7 @@ def calculate_mesh_polycount():
         ])
         bm.free()
     total_polycount = [total_verts_in_selection,
-                        total_tris_in_selection, total_area]
+                       total_tris_in_selection, total_area]
 
     def sortList(item):
         if polycount_sorting == 'NAME':
