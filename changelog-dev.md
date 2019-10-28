@@ -9,3 +9,4 @@
 - calculation can now be made even in edit mode
 - user can choose if polycount is made in selection or whole scene
 - resfresh button no longer put mess in sort
+- versioning now use date
