@@ -14,7 +14,6 @@ from bpy.props import (
 # some variables have to be accessible from anywhere
 objects_polycount, total_polycount = [], []
 last_user_refresh = "never"
-last_selected_objects = False
 polycount_sorting_ascending = True
 polycount_sorting = 'TRIS'
 
@@ -27,7 +26,6 @@ def calculate_mesh_polycount():
     global total_polycount
     global polycount_sorting
     global polycount_sorting_ascending
-    global last_selected_objects
 
     total_tris_in_selection = 0
     total_verts_in_selection = 0
@@ -42,74 +40,73 @@ def calculate_mesh_polycount():
             o for o in bpy.context.view_layer.objects if o.type == 'MESH']
             
     print("-----------------")
-    if last_selected_objects != objects_to_compute:
-        """
-        trying to get rid of instances
-        """
-        # objects_to_compute_name = []
-        # for obj in objects_to_compute:
-        #     # bypassing instances, as polycount is obviously the same
-        #     objects_to_compute_name.append(obj.name)
-        # objects_to_compute_name.sort(reverse=False)
-        # instance_list = []
-        # for name in objects_to_compute_name:
-        #     current_object = bpy.data.objects.get(name)
-        #     if current_object.data.users == 1:
-        #         # no instance
-        #         continue
-        #     if current_object.data.name not in instance_list:
-        #         print("not in")
-        #         instance_list.append(current_object.data.name)
-        #     print("instance_list: ",instance_list)
-        #     for existing_name in instance_list:
-        #         # if original mesh on the list, we can erase this current instance
-        #         print("3")
-        #         print("current_object.name:",current_object.name)
-        #         print("existing_name",existing_name)
-        #         if str(current_object.data.name) == str(existing_name):
-        #             print("pipipipipi")
-        #             continue
-        #         print("cacacacaccaca")
-        #         objects_to_compute.remove(current_object)
-        # print("final")
-        # print(objects_to_compute)
-        # reset the table
-        objects_polycount = []
-        total_polycount = []
-        # calculate only selected objects
-        for obj in objects_to_compute:
-            bm = bmesh.new()
-            bm.from_mesh(obj.data)
-            bm.faces.ensure_lookup_table()
-            tris_count = len(bm.calc_loop_triangles())
-            exceed_16bmesh_buffer_limit = False
-            verts_count = len(bm.verts)
-            if verts_count > 65535:
-                exceed_16bmesh_buffer_limit = True
-            has_ngon = False
-            area = 0
-            for face in bm.faces:
-                area += face.calc_area()
-                if len(face.edges) > 4:
-                    has_ngon = True
-            area = round(area, 2)
-            # adding obj polycount to total count
-            total_tris_in_selection += tris_count
-            total_verts_in_selection += verts_count
-            total_area += area
-            # generate table
-            objects_polycount.append([
-                obj.name,
-                verts_count,
-                tris_count,
-                has_ngon,
-                area,
-                exceed_16bmesh_buffer_limit
-            ])
-            bm.free()
-        total_polycount = [total_verts_in_selection,
-                           total_tris_in_selection, total_area]
-        last_selected_objects = objects_to_compute
+
+    """
+    trying to get rid of instances
+    """
+    # objects_to_compute_name = []
+    # for obj in objects_to_compute:
+    #     # bypassing instances, as polycount is obviously the same
+    #     objects_to_compute_name.append(obj.name)
+    # objects_to_compute_name.sort(reverse=False)
+    # instance_list = []
+    # for name in objects_to_compute_name:
+    #     current_object = bpy.data.objects.get(name)
+    #     if current_object.data.users == 1:
+    #         # no instance
+    #         continue
+    #     if current_object.data.name not in instance_list:
+    #         print("not in")
+    #         instance_list.append(current_object.data.name)
+    #     print("instance_list: ",instance_list)
+    #     for existing_name in instance_list:
+    #         # if original mesh on the list, we can erase this current instance
+    #         print("3")
+    #         print("current_object.name:",current_object.name)
+    #         print("existing_name",existing_name)
+    #         if str(current_object.data.name) == str(existing_name):
+    #             print("yepyepyep")
+    #             continue
+    #         print("nopenopenope")
+    #         objects_to_compute.remove(current_object)
+    # print("final")
+    # print(objects_to_compute)
+    # reset the table
+    objects_polycount = []
+    total_polycount = []
+    # calculate only selected objects
+    for obj in objects_to_compute:
+        bm = bmesh.new()
+        bm.from_mesh(obj.data)
+        bm.faces.ensure_lookup_table()
+        tris_count = len(bm.calc_loop_triangles())
+        exceed_16bmesh_buffer_limit = False
+        verts_count = len(bm.verts)
+        if verts_count > 65535:
+            exceed_16bmesh_buffer_limit = True
+        has_ngon = False
+        area = 0
+        for face in bm.faces:
+            area += face.calc_area()
+            if len(face.edges) > 4:
+                has_ngon = True
+        area = round(area, 2)
+        # adding obj polycount to total count
+        total_tris_in_selection += tris_count
+        total_verts_in_selection += verts_count
+        total_area += area
+        # generate table
+        objects_polycount.append([
+            obj.name,
+            verts_count,
+            tris_count,
+            has_ngon,
+            area,
+            exceed_16bmesh_buffer_limit
+        ])
+        bm.free()
+    total_polycount = [total_verts_in_selection,
+                        total_tris_in_selection, total_area]
 
     def sortList(item):
         if polycount_sorting == 'NAME':
