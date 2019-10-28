@@ -2,7 +2,8 @@
 
 A Blender 2.8 addon helping to know about your scene polycount.
 
-[Changelog](https://github.com/Vinc3r/Polycount/blob/master/changelog.md).
+[Changelog](https://github.com/Vinc3r/Polycount/blob/master/changelog.md)
+([*in development*](https://github.com/Vinc3r/Polycount/blob/master/changelog-dev.md))
 
 ## Installation
 
