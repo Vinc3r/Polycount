@@ -18,7 +18,15 @@ Polycount is now available in `Properties` > `Scene` > `Polycount` tab.
 
 ## Usage
 
-Polycount computation is done by user interaction, on the `Refresh` button.
+- `Refresh` button recompute calculation. It's not automatic due to performance reasons
+- `only selected` checkbox allow toogle computation between all meshes in active View Layers or only mesh in current selection
+- clicking on columns name toogle or change meshes sorting
+- current active objet is visible in the Object column, and can be changed by clicking on a name
+-  `*` char on Verts column tell you if if the mesh is out of mesh vertex buffer limit (65 535)
+- `±` char on Tris column tell you if nGons are in the place
 
-- Verts alrogithm have to be enhanced (for now, a smooth cube get the same count as a solid cube)
 - Area is shown as m².
+
+## Knows Limitations
+
+- Verts algorithm have to be enhanced (for now, a smoothed shading cube get the same count (8) as a sharped one, which should give us a count of 24). [need help](https://github.com/Vinc3r/Polycount/issues/2)

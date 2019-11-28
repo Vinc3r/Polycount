@@ -162,7 +162,7 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
         row.operator("polycount.user_interaction",
                      text="Refresh (last: {})".format(last_user_refresh), icon="FILE_REFRESH").refresh = True
         row = layout.row()
-        row.prop(context.scene, "use_selection", text="use selection")
+        row.prop(context.scene, "use_selection", text="only selected")
         box = layout.box()
         col_flow = box.column_flow(
             columns=0, align=True)
@@ -288,9 +288,10 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
         else:
             if self.make_active is not "" and \
                     bpy.data.objects.get(str(self.make_active)) is not None:
-                # if we only want to make active an object, no need to change sorting
+                # if we only want to make select an object, no need to change sorting
                 context.view_layer.objects.active = bpy.data.objects[str(
                     self.make_active)]
+                context.view_layer.objects.active.select_set(True)
             else:
                 if last_user_refresh is not "never":
                     if self.poly_sort == polycount_sorting:
