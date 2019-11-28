@@ -5,6 +5,10 @@ A Blender 2.8 addon helping to know about your scene polycount.
 [Changelog](https://github.com/Vinc3r/Polycount/blob/master/changelog.md)
 ([*in development*](https://github.com/Vinc3r/Polycount/blob/master/changelog-dev.md))
 
+1. [Installation](https://github.com/Vinc3r/Polycount#installation)
+2. [Usage](https://github.com/Vinc3r/Polycount#usage)
+3. [Known Limitations](https://github.com/Vinc3r/Polycount#known-limitations)
+
 ## Installation
 
 1. download [last version](https://github.com/Vinc3r/Polycount/releases/latest)
@@ -27,6 +31,6 @@ Polycount is now available in `Properties` > `Scene` > `Polycount` tab.
 
 - Area is shown as m².
 
-## Knows Limitations
+## Known Limitations
 
 - Verts algorithm have to be enhanced (for now, a smoothed shading cube get the same count (8) as a sharped one, which should give us a count of 24). [need help](https://github.com/Vinc3r/Polycount/issues/2)
