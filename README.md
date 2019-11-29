@@ -26,7 +26,7 @@ Polycount is now available in `Properties` > `Scene` > `Polycount` tab.
 - `only selected` checkbox allow toogle computation between all meshes in active View Layers or only mesh in current selection
 - clicking on columns name toogle or change meshes sorting
 - current active objet is visible in the Object column, and can be changed by clicking on a name
--  `*` char on Verts column tell you if if the mesh is out of mesh vertex buffer limit (65 535)
+-  `*` char on Verts column tell you if if the mesh is out of the 16b mesh vertex buffer limit (65 535)
 - `±` char on Tris column tell you if nGons are in the place
 
 - Area is shown as m².
