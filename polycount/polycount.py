@@ -158,19 +158,49 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
         global polycount_sorting_ascending
         global polycount_sorting
 
+        """
+            refresh
+        """
+
         row = layout.row()
         row.operator("polycount.user_interaction",
                      text="Refresh (last: {})".format(last_user_refresh), icon="FILE_REFRESH").refresh = True
+
+        """
+            options
+        """
+
         row = layout.row()
         row.prop(context.scene, "use_selection", text="only selected")
+
+        """
+            show total polycount
+        """
+
         box = layout.box()
         col_flow = box.column_flow(
             columns=0, align=True)
         row = col_flow.row(align=True)
+        row.label(text="Total")
+        if len(total_polycount) > 0:
+            row.label(text="%i" % (total_polycount[0]))
+            row.label(text="%i" % (total_polycount[1]))
+            row.label(text="%i" % (total_polycount[2]))
+        else:
+            row.label(text="0")
+            row.label(text="0")
+            row.label(text="0")
+
         """
-            sorting buttons
+            show individuals polycount
         """
-        # Object
+
+        row = col_flow.row(align=True)
+           
+        # buttons layout
+        
+        ## Object name
+
         if polycount_sorting == 'NAME':
             if polycount_sorting_ascending:
                 row.operator("polycount.user_interaction",
@@ -181,7 +211,9 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
         else:
             row.operator("polycount.user_interaction",
                          text="Object").poly_sort = 'NAME'
-        # Verts
+
+        ## Verts
+
         if polycount_sorting == 'VERTS':
             if polycount_sorting_ascending:
                 row.operator("polycount.user_interaction",
@@ -192,7 +224,9 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
         else:
             row.operator("polycount.user_interaction",
                          text="Verts").poly_sort = 'VERTS'
-        # Tris
+
+        ## Tris
+
         if polycount_sorting == 'TRIS':
             if polycount_sorting_ascending:
                 row.operator("polycount.user_interaction",
@@ -203,7 +237,9 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
         else:
             row.operator("polycount.user_interaction",
                          text="Tris").poly_sort = 'TRIS'
-        # Area
+
+        ## Area
+
         if polycount_sorting == 'AREA':
             if polycount_sorting_ascending:
                 row.operator("polycount.user_interaction",
@@ -214,9 +250,9 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
         else:
             row.operator("polycount.user_interaction",
                          text="Area").poly_sort = 'AREA'
-        """
-            numberz
-        """
+
+        # objects stats layout
+        
         if len(objects_polycount) > 0:
             for obj in objects_polycount:
                 row = col_flow.row(align=True)
@@ -241,20 +277,6 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
                     row.label(text="± %i" % (obj[2]))
                 # show area
                 row.label(text=str(obj[4]))
-        """
-            show total polycount
-        """
-        box = layout.box()
-        row = box.row(align=True)
-        row.label(text="Total")
-        if len(total_polycount) > 0:
-            row.label(text="%i" % (total_polycount[0]))
-            row.label(text="%i" % (total_polycount[1]))
-            row.label(text="%i" % (total_polycount[2]))
-        else:
-            row.label(text="0")
-            row.label(text="0")
-            row.label(text="0")
 
 
 class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
