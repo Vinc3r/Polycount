@@ -171,7 +171,7 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
         """
 
         row = layout.row()
-        row.prop(context.scene, "use_selection", text="only selected")
+        row.prop(context.scene, "polycount_use_selection", text="only selected")
 
         """
             show total polycount
@@ -348,8 +348,8 @@ def register():
     Scene.polycount_use_selection = BoolProperty(
         name="Polycount use selected only",
         description="Should Polycount only check selected objects?",
-        default=True)
-
+        default=True
+    )
 
 def unregister():
     from bpy.utils import unregister_class
