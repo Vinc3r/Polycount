@@ -32,7 +32,7 @@ def calculate_mesh_polycount():
     total_area = 0
     objects_to_compute = []
 
-    if bpy.context.scene.use_selection:
+    if bpy.context.scene.polycount_use_selection:
         objects_to_compute = [
             o for o in bpy.context.selected_objects if o.type == 'MESH']
     else:
@@ -345,7 +345,10 @@ def register():
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
-    Scene.use_selection = BoolProperty(default=True)
+    Scene.polycount_use_selection = BoolProperty(
+        name="Polycount use selected only",
+        description="Should Polycount only check selected objects?",
+        default=True)
 
 
 def unregister():
@@ -353,7 +356,7 @@ def unregister():
     for cls in reversed(classes):
         unregister_class(cls)
 
-    del Scene.use_selection
+    del Scene.polycount_use_selection
 
 
 if __name__ == "__main__":
