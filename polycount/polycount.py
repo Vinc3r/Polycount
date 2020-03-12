@@ -78,26 +78,48 @@ def calculate_mesh_polycount():
         allowing realistic vertex count
         https://github.com/KhronosGroup/glTF-Blender-IO/blob/master/addons/io_scene_gltf2/blender/exp/gltf2_blender_gather_nodes.py#L268
     """
-    # import bmesh
-    # bm = bmesh.new()
-    # bm.from_mesh(bpy.context.active_object.data)
-    # print("vertex: {}".format(len(bm.verts)))
-    # bmesh.ops.split_edges(bm, edges=bm.edges)
-    # print("real vertex: {}".format(len(bm.verts)))
-    # bm.free()
 
     objects_polycount = []
     total_polycount = []
+    modifier_normal_types = [
+        "NORMAL_EDIT",
+        "WEIGHTED_NORMAL",
+        "BEVEL"
+    ]
     # calculate only selected objects
     for obj in objects_to_compute:
+
+        auto_smooth = obj.data.use_auto_smooth
+        edge_split_tmp = None
+        # checking if obj have normals modifier
+        have_some_normals_modifier = any([m in modifier_normal_types for m in [
+                                         mod.type for mod in obj.modifiers]])
+
+        # if only autosmooth, we can add a temp edgesplit modifier
+        if auto_smooth and not have_some_normals_modifier:
+            edge_split_tmp = obj.modifiers.new(
+                'Temporary_Auto_Smooth', 'EDGE_SPLIT')
+            edge_split_tmp.split_angle = obj.data.auto_smooth_angle
+            edge_split_tmp.use_edge_angle = not obj.data.has_custom_normals
+            obj.data.use_auto_smooth = False
+            bpy.context.view_layer.update()
+
+        # updating all this stuff that's I'm not sure what it is
+        depsgraph = bpy.context.evaluated_depsgraph_get()
+        blender_mesh = obj.evaluated_get(depsgraph).to_mesh(
+            preserve_all_data_layers=True, depsgraph=depsgraph)
+
         bm = bmesh.new()
-        bm.from_mesh(obj.data)
+        bm.from_mesh(blender_mesh)
         bm.faces.ensure_lookup_table()
+        # tri
         tris_count = len(bm.calc_loop_triangles())
+        # verts
         exceed_16bmesh_buffer_limit = False
         verts_count = len(bm.verts)
         if verts_count > 65535:
             exceed_16bmesh_buffer_limit = True
+        # area
         has_ngon = False
         area = 0
         for face in bm.faces:
@@ -118,7 +140,14 @@ def calculate_mesh_polycount():
             area,
             exceed_16bmesh_buffer_limit
         ])
+
+        # removing temp edge split modifier
+        if auto_smooth and not have_some_normals_modifier:
+            obj.data.use_auto_smooth = True
+            obj.modifiers.remove(edge_split_tmp)
+
         bm.free()
+
     total_polycount = [total_verts_in_selection,
                        total_tris_in_selection, total_area]
 
@@ -197,10 +226,10 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
         """
 
         row = col_flow.row(align=True)
-           
+
         # buttons layout
-        
-        ## Object name
+
+        # Object name
 
         if polycount_sorting == 'NAME':
             if polycount_sorting_ascending:
@@ -213,7 +242,7 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
             row.operator("polycount.user_interaction",
                          text="Object").poly_sort = 'NAME'
 
-        ## Verts
+        # Verts
 
         if polycount_sorting == 'VERTS':
             if polycount_sorting_ascending:
@@ -226,7 +255,7 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
             row.operator("polycount.user_interaction",
                          text="Verts").poly_sort = 'VERTS'
 
-        ## Tris
+        # Tris
 
         if polycount_sorting == 'TRIS':
             if polycount_sorting_ascending:
@@ -239,7 +268,7 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
             row.operator("polycount.user_interaction",
                          text="Tris").poly_sort = 'TRIS'
 
-        ## Area
+        # Area
 
         if polycount_sorting == 'AREA':
             if polycount_sorting_ascending:
@@ -253,7 +282,7 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
                          text="Area").poly_sort = 'AREA'
 
         # objects stats layout
-        
+
         if len(objects_polycount) > 0:
             for obj in objects_polycount:
                 row = col_flow.row(align=True)
@@ -351,6 +380,7 @@ def register():
         description="Should Polycount only check selected objects?",
         default=True
     )
+
 
 def unregister():
     from bpy.utils import unregister_class
