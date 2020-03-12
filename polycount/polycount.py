@@ -72,10 +72,11 @@ def calculate_mesh_polycount():
     # print("final")
     # print(objects_to_compute)
     # reset the table
+
     """
-        trying to split edges by angle to get correct polycount
-            - have to find out how to list only edges where angle get out of user value (autosmooth)
-            https://blender.stackexchange.com/questions/80907/how-to-get-angle-of-edge-python
+        thanks to glTF developpers for piece of code about normals,
+        allowing realistic vertex count
+        https://github.com/KhronosGroup/glTF-Blender-IO/blob/master/addons/io_scene_gltf2/blender/exp/gltf2_blender_gather_nodes.py#L268
     """
     # import bmesh
     # bm = bmesh.new()
