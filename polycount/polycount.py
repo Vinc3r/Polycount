@@ -82,9 +82,10 @@ def calculate_mesh_polycount():
     objects_polycount = []
     total_polycount = []
     modifier_normal_types = [
-        "NORMAL_EDIT",
-        "WEIGHTED_NORMAL",
-        "BEVEL"
+        'NORMAL_EDIT',
+        'WEIGHTED_NORMAL',
+        # 'BEVEL',
+        'EDGE_SPLIT'
     ]
     # calculate only selected objects
     for obj in objects_to_compute:
@@ -324,9 +325,7 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return len(context.view_layer.objects) > 0 and \
-            bpy.context.view_layer.objects.active  # and \
-        # bpy.context.view_layer.objects.active.mode == 'OBJECT'
+        return len(context.view_layer.objects) > 0
 
     def execute(self, context):
         global last_user_refresh
