@@ -6,3 +6,11 @@ Thumbs.db
 *.ffs_db
 .directory
 *__pycache__*
+_testFiles_/exports-for-comparisons/Unity-Polycount/Library/*
+_testFiles_/exports-for-comparisons/Unity-Polycount/Logs/*
+_testFiles_/exports-for-comparisons/Unity-Polycount/Packages/*
+_testFiles_/exports-for-comparisons/UnrealPolycount/Intermediate/*Cache*
+_testFiles_/exports-for-comparisons/UnrealPolycount/Saved/Autosaves/*
+_testFiles_/exports-for-comparisons/UnrealPolycount/Saved/Logs/*
+_testFiles_/exports-for-comparisons/UnrealPolycount/Saved/AutoScreenshot.png
+_testFiles_/exports-for-comparisons/UnrealPolycount/Saved/Config/Crash*
