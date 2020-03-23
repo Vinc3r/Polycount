@@ -28,9 +28,5 @@ Polycount is now available in `Properties` > `Scene` > `Polycount` tab.
 - current active objet is visible in the Object column, and can be changed by clicking on a name
 -  `*` char on Verts column tell you if if the mesh is out of the 16b mesh vertex buffer limit ([65 535](https://en.wikipedia.org/wiki/65,535#In_computing))
 - `±` char on Tris column tell you if nGons are in the place
-
-- Area is shown as m².
-
-## Known Limitations
-
-- Verts algorithm have to be enhanced (for now, a smoothed shading cube get the same count (8) as a sharped one, which should give us a count of 24). [need help](https://github.com/Vinc3r/Polycount/issues/2)
+- Area is shown as m²
+- Vertex count take into account smooth and sharp edges

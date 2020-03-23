@@ -1,5 +1,10 @@
 # Polycount changelog
 
+## [v2020.03.23](https://github.com/Vinc3r/Polycount/releases/tag/v2020.03.23)
+
+- Total is now shown on top of the list
+- Vertex count is now more accurate
+
 ## [v2019.11.28](https://github.com/Vinc3r/Polycount/releases/tag/v2019.11.28)
 
 - vertex buffer limit fixed (65 535 in place of 65 536, [testfile](https://github.com/Vinc3r/BlenderScripts/blob/master/_testFiles_/16b-mesh-vertex-buffer-limitation.glb) to play with [sandbox](https://sandbox.babylonjs.com/)) 
