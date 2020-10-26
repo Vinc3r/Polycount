@@ -7,6 +7,7 @@ from bpy.props import (
     BoolProperty,
     StringProperty
 )
+from bpy.utils import user_resource
 
 # some variables have to be accessible from anywhere
 objects_polycount, total_polycount = [], []
@@ -28,6 +29,7 @@ def calculate_mesh_polycount():
     total_verts_in_selection = 0
     total_area = 0
     objects_to_compute = []
+    user_preferences = bpy.context.preferences.addons[__package__].preferences
 
     if bpy.context.scene.polycount_use_selection:
         objects_to_compute = [
@@ -35,7 +37,6 @@ def calculate_mesh_polycount():
     else:
         objects_to_compute = [
             o for o in bpy.context.view_layer.objects if o.type == 'MESH']
-
 
     """
     trying to get rid of instances
@@ -110,20 +111,25 @@ def calculate_mesh_polycount():
         bm.from_mesh(blender_mesh)
         bm.faces.ensure_lookup_table()
         # tri
-        tris_count = len(bm.calc_loop_triangles())
+        tris_count = 0
+        if user_preferences.show_tris:
+            tris_count = len(bm.calc_loop_triangles())
         # verts
         exceed_16bmesh_buffer_limit = False
-        verts_count = len(bm.verts)
-        if verts_count > 65535:
-            exceed_16bmesh_buffer_limit = True
+        verts_count = 0
+        if user_preferences.show_verts:
+            verts_count = len(bm.verts)
+            if verts_count > 65535:
+                exceed_16bmesh_buffer_limit = True
         # area
         has_ngon = False
         area = 0
         for face in bm.faces:
-            area += face.calc_area()
+            if user_preferences.show_area:
+                area += face.calc_area()
+                area = round(area, 2)
             if len(face.edges) > 4:
                 has_ngon = True
-        area = round(area, 2)
         # adding obj polycount to total count
         total_tris_in_selection += tris_count
         total_verts_in_selection += verts_count
@@ -185,6 +191,8 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
         global polycount_sorting_ascending
         global polycount_sorting
 
+        user_preferences = context.preferences.addons[__package__].preferences
+
         """
             refresh
         """
@@ -197,26 +205,33 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
             options
         """
 
-        row = layout.row()
+        box = layout.box()
+        row = box.row()
         row.prop(context.scene, "polycount_use_selection", text="only selected")
 
         """
             show total polycount
         """
 
-        box = layout.box()
-        col_flow = box.column_flow(
+        # box = layout.box()
+        col_flow = layout.column_flow(
             columns=0, align=True)
         row = col_flow.row(align=True)
         row.label(text="Total")
         if len(total_polycount) > 0:
-            row.label(text="%i" % (total_polycount[0]))
-            row.label(text="%i" % (total_polycount[1]))
-            row.label(text="%i" % (total_polycount[2]))
+            if user_preferences.show_verts:
+                row.label(text="%i" % (total_polycount[0]))
+            if user_preferences.show_tris:
+                row.label(text="%i" % (total_polycount[1]))
+            if user_preferences.show_area:
+                row.label(text="%i" % (total_polycount[2]))
         else:
-            row.label(text="0")
-            row.label(text="0")
-            row.label(text="0")
+            if user_preferences.show_verts:
+                row.label(text="-")
+            if user_preferences.show_tris:
+                row.label(text="-")
+            if user_preferences.show_area:
+                row.label(text="-")
 
         """
             show individuals polycount
@@ -241,42 +256,45 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
 
         # Verts
 
-        if polycount_sorting == 'VERTS':
-            if polycount_sorting_ascending:
-                row.operator("polycount.user_interaction",
-                             text="Verts", icon="TRIA_DOWN").poly_sort = 'VERTS'
+        if user_preferences.show_verts:
+            if polycount_sorting == 'VERTS':
+                if polycount_sorting_ascending:
+                    row.operator("polycount.user_interaction",
+                                 text="Verts", icon="TRIA_DOWN").poly_sort = 'VERTS'
+                else:
+                    row.operator("polycount.user_interaction",
+                                 text="Verts", icon="TRIA_UP").poly_sort = 'VERTS'
             else:
                 row.operator("polycount.user_interaction",
-                             text="Verts", icon="TRIA_UP").poly_sort = 'VERTS'
-        else:
-            row.operator("polycount.user_interaction",
-                         text="Verts").poly_sort = 'VERTS'
+                             text="Verts").poly_sort = 'VERTS'
 
         # Tris
 
-        if polycount_sorting == 'TRIS':
-            if polycount_sorting_ascending:
-                row.operator("polycount.user_interaction",
-                             text="Tris", icon="TRIA_DOWN").poly_sort = 'TRIS'
+        if user_preferences.show_tris:
+            if polycount_sorting == 'TRIS':
+                if polycount_sorting_ascending:
+                    row.operator("polycount.user_interaction",
+                                 text="Tris", icon="TRIA_DOWN").poly_sort = 'TRIS'
+                else:
+                    row.operator("polycount.user_interaction",
+                                 text="Tris", icon="TRIA_UP").poly_sort = 'TRIS'
             else:
                 row.operator("polycount.user_interaction",
-                             text="Tris", icon="TRIA_UP").poly_sort = 'TRIS'
-        else:
-            row.operator("polycount.user_interaction",
-                         text="Tris").poly_sort = 'TRIS'
+                             text="Tris").poly_sort = 'TRIS'
 
         # Area
 
-        if polycount_sorting == 'AREA':
-            if polycount_sorting_ascending:
-                row.operator("polycount.user_interaction",
-                             text="Area", icon="TRIA_DOWN").poly_sort = 'AREA'
+        if user_preferences.show_area:
+            if polycount_sorting == 'AREA':
+                if polycount_sorting_ascending:
+                    row.operator("polycount.user_interaction",
+                                 text="Area", icon="TRIA_DOWN").poly_sort = 'AREA'
+                else:
+                    row.operator("polycount.user_interaction",
+                                 text="Area", icon="TRIA_UP").poly_sort = 'AREA'
             else:
                 row.operator("polycount.user_interaction",
-                             text="Area", icon="TRIA_UP").poly_sort = 'AREA'
-        else:
-            row.operator("polycount.user_interaction",
-                         text="Area").poly_sort = 'AREA'
+                             text="Area").poly_sort = 'AREA'
 
         # objects stats layout
 
@@ -291,19 +309,22 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
                     row.operator("polycount.user_interaction",
                                  text=str(obj[0]), depress=False).make_active = obj[0]
                 # show verts
-                if not obj[5]:
-                    # no mesh vertex buffer limit
-                    row.label(text=str(obj[1]))
-                else:
-                    row.label(text="%i*" % obj[1])
+                if user_preferences.show_verts:
+                    if not obj[5]:
+                        # no mesh vertex buffer limit
+                        row.label(text=str(obj[1]))
+                    else:
+                        row.label(text="%i*" % obj[1])
                 # show tri & ngon
-                if not obj[3]:
-                    # no ngons
-                    row.label(text=str(obj[2]))
-                else:
-                    row.label(text="± %i" % (obj[2]))
-                # show area
-                row.label(text=str(obj[4]))
+                if user_preferences.show_tris:
+                    if not obj[3]:
+                        # no ngons
+                        row.label(text=str(obj[2]))
+                    else:
+                        row.label(text="± %i" % (obj[2]))
+                if user_preferences.show_area:
+                    # show area
+                    row.label(text=str(obj[4]))
 
 
 class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
@@ -333,8 +354,8 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
             self.refresh = False
             pass
         else:
-            if self.make_active is not "" and \
-                    bpy.data.objects.get(str(self.make_active)) is not None:
+            if (self.make_active is not ""
+                    and bpy.data.objects.get(str(self.make_active)) is not None):
                 # if we only want to make select an object, no need to change sorting
                 context.view_layer.objects.active = bpy.data.objects[str(
                     self.make_active)]
@@ -355,7 +376,8 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
 
         # getting the time
         now = datetime.datetime.now()
-        polycount_last_user_refresh = "{:02d}:{:02d}".format(now.hour, now.minute)
+        polycount_last_user_refresh = "{:02d}:{:02d}".format(
+            now.hour, now.minute)
 
         return {'FINISHED'}
 

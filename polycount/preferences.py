@@ -7,16 +7,26 @@ from bpy.props import (
 class POLYCOUNT_PT_Preferences(bpy.types.AddonPreferences):
     bl_idname = __package__
 
-    myBool: BoolProperty(
-        name="Example Boolean",
-        default=False,
+    show_verts: BoolProperty(
+        name="Are vertices taken into account",
+        default=True,
+    )
+    show_tris: BoolProperty(
+        name="aAre triangles taken into account",
+        default=True,
+    )
+    show_area: BoolProperty(
+        name="Is area taken into account",
+        default=True,
     )
 
     def draw(self, context):
         layout = self.layout
-        layout.label(text="myBool")
         row = layout.row()
-        row.prop(self, "myBool", text="this is a test")
+        row.label(text="Stats to show: ")
+        row.prop(self, "show_verts", text="Verts")
+        row.prop(self, "show_tris", text="Tri")
+        row.prop(self, "show_area", text="Area")
 
 
 classes = (
