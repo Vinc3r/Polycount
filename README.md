@@ -23,10 +23,10 @@ Polycount is now available in `Properties` > `Scene` > `Polycount` tab.
 ## Usage
 
 - `Refresh` button recompute calculation. It's not automatic due to performance reasons
-- `only selected` checkbox allow toogle computation between all meshes in active View Layers or only mesh in current selection
-- clicking on columns name toogle or change meshes sorting
+- `only selected` checkbox allow toggle computation between all meshes in active View Layers or only meshes in current selection
+- clicking on columns name toggle/change meshes sorting
 - current active objet is visible in the Object column, and can be changed by clicking on a name
 -  `*` char on Verts column tell you if if the mesh is out of the 16b mesh vertex buffer limit ([65 535](https://en.wikipedia.org/wiki/65,535#In_computing))
 - `±` char on Tris column tell you if nGons are in the place
 - Area is shown as m²
-- Vertex count take into account smooth and sharp edges
+- Vertex count take into account smooth and sharp edges (however objects have to be in Shade Smooth)
