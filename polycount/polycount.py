@@ -11,9 +11,10 @@ from bpy.utils import user_resource
 
 # some variables have to be accessible from anywhere
 objects_polycount, total_polycount = [], []
-polycount_last_user_refresh = "never"
+last_user_refresh = "never"
 polycount_sorting_ascending = True
 polycount_sorting = 'TRIS'
+object_with_ngons = []
 
 
 def calculate_mesh_polycount():
@@ -24,11 +25,13 @@ def calculate_mesh_polycount():
     global total_polycount
     global polycount_sorting
     global polycount_sorting_ascending
+    global object_with_ngons
 
     total_tris_in_selection = 0
     total_verts_in_selection = 0
     total_area = 0
     objects_to_compute = []
+    object_with_ngons = []
     user_preferences = bpy.context.preferences.addons[__package__].preferences
 
     if bpy.context.scene.polycount_use_selection:
@@ -130,6 +133,8 @@ def calculate_mesh_polycount():
                 area = round(area, 2)
             if len(face.edges) > 4:
                 has_ngon = True
+        if has_ngon:
+            object_with_ngons.append(obj)
         # adding obj polycount to total count
         total_tris_in_selection += tris_count
         total_verts_in_selection += verts_count
@@ -178,6 +183,21 @@ def calculate_mesh_polycount():
     return {'FINISHED'}
 
 
+def select_objects_with_ngons():
+    print(object_with_ngons)
+    if len(object_with_ngons) > 0:
+        for obj in bpy.context.view_layer.objects:
+            if obj.type != 'MESH':
+                continue
+            obj.select_set(False)
+        for obj in object_with_ngons:
+            if obj.type != 'MESH':
+                continue
+            obj.select_set(True)
+        bpy.context.view_layer.objects.active = object_with_ngons[0]
+    return {'FINISHED'}
+
+
 class POLYCOUNT_PT_gui(bpy.types.Panel):
     bl_label = "Polycount"
     bl_idname = "POLYCOUNT_PT_gui"
@@ -187,7 +207,7 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        global polycount_last_user_refresh
+        global last_user_refresh
         global polycount_sorting_ascending
         global polycount_sorting
 
@@ -199,7 +219,7 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
 
         row = layout.row()
         row.operator("polycount.user_interaction",
-                     text="Refresh (last: {})".format(polycount_last_user_refresh), icon="FILE_REFRESH").refresh = True
+                     text="Refresh (last: {})".format(last_user_refresh), icon="FILE_REFRESH").refresh = True
 
         """
             options
@@ -208,6 +228,16 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
         box = layout.box()
         row = box.row()
         row.prop(context.scene, "polycount_use_selection", text="only selected")
+
+        if not context.scene.polycount_options_unfold:
+            row.operator("polycount.options",
+                         icon='TRIA_RIGHT', text="options", depress=False).unfold = True
+        else:
+            row.operator("polycount.options",
+                         icon='TRIA_DOWN', text="options", depress=True).unfold = False
+            row = box.row()
+            row.operator("polycount.options",
+                         text="Select nGons").option = "ngons"
 
         """
             show total polycount
@@ -345,7 +375,7 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
         return len(context.view_layer.objects) > 0
 
     def execute(self, context):
-        global polycount_last_user_refresh
+        global last_user_refresh
         global polycount_sorting_ascending
         global polycount_sorting
 
@@ -361,7 +391,7 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
                     self.make_active)]
                 context.view_layer.objects.active.select_set(True)
             else:
-                if polycount_last_user_refresh is not "never":
+                if last_user_refresh is not "never":
                     if self.poly_sort == polycount_sorting:
                         # if we want to toogle sorting type
                         polycount_sorting_ascending = not polycount_sorting_ascending
@@ -376,15 +406,30 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
 
         # getting the time
         now = datetime.datetime.now()
-        polycount_last_user_refresh = "{:02d}:{:02d}".format(
+        last_user_refresh = "{:02d}:{:02d}".format(
             now.hour, now.minute)
 
+        return {'FINISHED'}
+
+
+class POLYCOUNT_OT_options(bpy.types.Operator):
+    bl_idname = "polycount.options"
+    bl_label = "Quick options for Polycount"
+    bl_description = "Quick options for Polycount"
+    unfold: BoolProperty(default=False)
+    option: StringProperty(default="")
+
+    def execute(self, context):
+        context.scene.polycount_options_unfold = self.unfold
+        if self.option == "ngons":
+            select_objects_with_ngons()
         return {'FINISHED'}
 
 
 classes = (
     POLYCOUNT_PT_gui,
     POLYCOUNT_OT_user_interaction,
+    POLYCOUNT_OT_options,
 )
 
 
@@ -397,6 +442,11 @@ def register():
         description="Should Polycount only check selected objects?",
         default=True
     )
+    Scene.polycount_options_unfold = BoolProperty(
+        name="Polycount quick options",
+        description="Polycount quick options",
+        default=False
+    )
 
 
 def unregister():
@@ -405,6 +455,7 @@ def unregister():
         unregister_class(cls)
 
     del Scene.polycount_use_selection
+    del Scene.polycount_options_unfold
 
 
 if __name__ == "__main__":
