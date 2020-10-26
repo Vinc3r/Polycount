@@ -4,16 +4,13 @@ import datetime
 from bpy.types import Scene
 from bpy.props import (
     EnumProperty,
-    FloatProperty,
-    FloatVectorProperty,
     BoolProperty,
-    IntProperty,
     StringProperty
 )
 
 # some variables have to be accessible from anywhere
 objects_polycount, total_polycount = [], []
-last_user_refresh = "never"
+polycount_last_user_refresh = "never"
 polycount_sorting_ascending = True
 polycount_sorting = 'TRIS'
 
@@ -39,7 +36,6 @@ def calculate_mesh_polycount():
         objects_to_compute = [
             o for o in bpy.context.view_layer.objects if o.type == 'MESH']
 
-    print("-----------------")
 
     """
     trying to get rid of instances
@@ -185,7 +181,7 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        global last_user_refresh
+        global polycount_last_user_refresh
         global polycount_sorting_ascending
         global polycount_sorting
 
@@ -195,7 +191,7 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
 
         row = layout.row()
         row.operator("polycount.user_interaction",
-                     text="Refresh (last: {})".format(last_user_refresh), icon="FILE_REFRESH").refresh = True
+                     text="Refresh (last: {})".format(polycount_last_user_refresh), icon="FILE_REFRESH").refresh = True
 
         """
             options
@@ -328,7 +324,7 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
         return len(context.view_layer.objects) > 0
 
     def execute(self, context):
-        global last_user_refresh
+        global polycount_last_user_refresh
         global polycount_sorting_ascending
         global polycount_sorting
 
@@ -344,7 +340,7 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
                     self.make_active)]
                 context.view_layer.objects.active.select_set(True)
             else:
-                if last_user_refresh is not "never":
+                if polycount_last_user_refresh is not "never":
                     if self.poly_sort == polycount_sorting:
                         # if we want to toogle sorting type
                         polycount_sorting_ascending = not polycount_sorting_ascending
@@ -359,7 +355,7 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
 
         # getting the time
         now = datetime.datetime.now()
-        last_user_refresh = "{:02d}:{:02d}".format(now.hour, now.minute)
+        polycount_last_user_refresh = "{:02d}:{:02d}".format(now.hour, now.minute)
 
         return {'FINISHED'}
 

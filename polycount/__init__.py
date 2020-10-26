@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Polycount",
     "description": "Know about your scene polycount",
-    "author": "Vincent (V!nc3r) Lamy",
+    "author": "Vincent (V!nc3r) Lamy ; thanks for some bits of code to: sambler, glTF developpers",
     "category": "Scene",
     "wiki_url": 'https://github.com/Vinc3r/Polycount#polycount',
     "tracker_url": 'https://github.com/Vinc3r/Polycount/issues',
@@ -9,7 +9,7 @@ bl_info = {
     "blender": (2, 80, 0)
 }
 
-modulesNames = ['polycount']
+modulesNames = ['preferences', 'polycount']
 
 modulesFullNames = []
 for currentModuleName in modulesNames:
