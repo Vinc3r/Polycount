@@ -21,7 +21,7 @@ class POLYCOUNT_PT_Preferences(bpy.types.AddonPreferences):
     )
     trim_numbers: BoolProperty(
         name="Trim large numbers",
-        default=False,
+        default=True,
     )
 
     def draw(self, context):

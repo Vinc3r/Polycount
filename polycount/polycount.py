@@ -256,18 +256,17 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
             show total polycount
         """
 
-        # box = layout.box()
         col_flow = layout.column_flow(
             columns=0, align=True)
         row = col_flow.row(align=True)
         row.label(text="Total")
         if len(total_polycount) > 0:
             if user_preferences.show_verts:
-                row.label(text="%i" % (total_polycount[0]))
+                row.label(text="{}".format(trim_numbers(total_polycount[0])))
             if user_preferences.show_tris:
-                row.label(text="%i" % (total_polycount[1]))
+                row.label(text="{}".format(trim_numbers(total_polycount[1])))
             if user_preferences.show_area:
-                row.label(text="%i" % (total_polycount[2]))
+                row.label(text="{}".format(trim_numbers(total_polycount[2])))
         else:
             if user_preferences.show_verts:
                 row.label(text="-")
