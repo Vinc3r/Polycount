@@ -196,7 +196,19 @@ def select_objects_with_ngons():
             obj.select_set(True)
         bpy.context.view_layer.objects.active = object_with_ngons[0]
     return {'FINISHED'}
-
+    
+def trim_numbers(number):
+    """ Take a number as entry, return a string formated
+    """
+    user_preferences = bpy.context.preferences.addons[__package__].preferences
+    numberAsString = "{}".format(number)
+    if (number < 1000
+        or user_preferences.trim_numbers == False
+    ):
+        return numberAsString
+    else:
+        numberAsString = "{:,.2f}k".format(round(number/1000, 2)).replace(",", " ")
+    return numberAsString
 
 class POLYCOUNT_PT_gui(bpy.types.Panel):
     bl_label = "Polycount"
@@ -230,16 +242,15 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
         row.prop(context.scene, "polycount_use_selection", text="Only selected")
 
         if not context.scene.polycount_options_unfold:
-            row.operator("polycount.fast_options",
+            row.operator("polycount.fast_options_unfold",
                          icon='TRIA_RIGHT', text="Options", depress=False).unfold = True
         else:
-            row.operator("polycount.fast_options",
+            row.operator("polycount.fast_options_unfold",
                          icon='TRIA_DOWN', text="Options", depress=True).unfold = False
             subbox = box.box()
             row = subbox.row()
-            row.operator("polycount.fast_options",
-                         text="Select nGons objects").option = "ngons"
-            row.prop(context.scene, "polycount_trim_numbers", text="Trim numbers")
+            row.operator("polycount.fast_options_sel_ngons",
+                         text="Select nGons objects")
 
         """
             show total polycount
@@ -342,21 +353,23 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
                                  text=str(obj[0]), depress=False).make_active = obj[0]
                 # show verts
                 if user_preferences.show_verts:
+                    verts_number = trim_numbers(obj[1])
                     if not obj[5]:
                         # no mesh vertex buffer limit
-                        row.label(text=str(obj[1]))
+                        row.label(text=verts_number)
                     else:
-                        row.label(text="%i*" % obj[1])
+                        row.label(text="{}*".format(verts_number))
                 # show tri & ngon
                 if user_preferences.show_tris:
+                    tris_number = trim_numbers(obj[2])
                     if not obj[3]:
                         # no ngons
-                        row.label(text=str(obj[2]))
+                        row.label(text=tris_number)
                     else:
-                        row.label(text="± %i" % (obj[2]))
+                        row.label(text="± {}".format(tris_number))
                 if user_preferences.show_area:
                     # show area
-                    row.label(text=str(obj[4]))
+                    row.label(text=trim_numbers(obj[4]))
 
 
 class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
@@ -414,25 +427,32 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class POLYCOUNT_OT_fast_options(bpy.types.Operator):
-    bl_idname = "polycount.fast_options"
-    bl_label = "Quick options for Polycount"
-    bl_description = "Quick options for Polycount"
+class POLYCOUNT_OT_fast_options_unfold(bpy.types.Operator):
+    bl_idname = "polycount.fast_options_unfold"
+    bl_label = "Fast-access options for Polycount"
+    bl_description = "Fast-access options for Polycount"
     unfold: BoolProperty(default=False)
-    option: StringProperty(default="")
 
     def execute(self, context):
         context.scene.polycount_options_unfold = self.unfold
-        if self.option == "ngons":
-            bpy.ops.polycount.user_interaction(refresh=True)
-            select_objects_with_ngons()
+        return {'FINISHED'}
+
+class POLYCOUNT_OT_fast_options_sel_ngons(bpy.types.Operator):
+    bl_idname = "polycount.fast_options_sel_ngons"
+    bl_label = "Select objects having nGons"
+    bl_description = "Select objects having nGons"
+
+    def execute(self, context):
+        bpy.ops.polycount.user_interaction(refresh=True)
+        select_objects_with_ngons()
         return {'FINISHED'}
 
 
 classes = (
     POLYCOUNT_PT_gui,
     POLYCOUNT_OT_user_interaction,
-    POLYCOUNT_OT_fast_options,
+    POLYCOUNT_OT_fast_options_unfold,
+    POLYCOUNT_OT_fast_options_sel_ngons,
 )
 
 
@@ -442,13 +462,8 @@ def register():
         register_class(cls)
     Scene.polycount_use_selection = BoolProperty(
         name="Use selected only",
-        description="Should Polycount only check selected objects?",
+        description="Compute stats only for selected objects",
         default=True
-    )
-    Scene.polycount_trim_numbers = BoolProperty(
-        name="Trim large numbers",
-        description="Trim large numbers",
-        default=False
     )
     Scene.polycount_options_unfold = BoolProperty(
         name="Fast options",
@@ -463,7 +478,6 @@ def unregister():
         unregister_class(cls)
 
     del Scene.polycount_use_selection
-    del Scene.polycount_trim_numbers
     del Scene.polycount_options_unfold
 
 
