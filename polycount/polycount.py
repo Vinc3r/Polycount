@@ -227,17 +227,19 @@ class POLYCOUNT_PT_gui(bpy.types.Panel):
 
         box = layout.box()
         row = box.row()
-        row.prop(context.scene, "polycount_use_selection", text="only selected")
+        row.prop(context.scene, "polycount_use_selection", text="Only selected")
 
         if not context.scene.polycount_options_unfold:
-            row.operator("polycount.options",
-                         icon='TRIA_RIGHT', text="options", depress=False).unfold = True
+            row.operator("polycount.fast_options",
+                         icon='TRIA_RIGHT', text="Options", depress=False).unfold = True
         else:
-            row.operator("polycount.options",
-                         icon='TRIA_DOWN', text="options", depress=True).unfold = False
-            row = box.row()
-            row.operator("polycount.options",
-                         text="Select nGons").option = "ngons"
+            row.operator("polycount.fast_options",
+                         icon='TRIA_DOWN', text="Options", depress=True).unfold = False
+            subbox = box.box()
+            row = subbox.row()
+            row.operator("polycount.fast_options",
+                         text="Select nGons objects").option = "ngons"
+            row.prop(context.scene, "polycount_trim_numbers", text="Trim numbers")
 
         """
             show total polycount
@@ -412,8 +414,8 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class POLYCOUNT_OT_options(bpy.types.Operator):
-    bl_idname = "polycount.options"
+class POLYCOUNT_OT_fast_options(bpy.types.Operator):
+    bl_idname = "polycount.fast_options"
     bl_label = "Quick options for Polycount"
     bl_description = "Quick options for Polycount"
     unfold: BoolProperty(default=False)
@@ -422,6 +424,7 @@ class POLYCOUNT_OT_options(bpy.types.Operator):
     def execute(self, context):
         context.scene.polycount_options_unfold = self.unfold
         if self.option == "ngons":
+            bpy.ops.polycount.user_interaction(refresh=True)
             select_objects_with_ngons()
         return {'FINISHED'}
 
@@ -429,7 +432,7 @@ class POLYCOUNT_OT_options(bpy.types.Operator):
 classes = (
     POLYCOUNT_PT_gui,
     POLYCOUNT_OT_user_interaction,
-    POLYCOUNT_OT_options,
+    POLYCOUNT_OT_fast_options,
 )
 
 
@@ -438,13 +441,18 @@ def register():
     for cls in classes:
         register_class(cls)
     Scene.polycount_use_selection = BoolProperty(
-        name="Polycount use selected only",
+        name="Use selected only",
         description="Should Polycount only check selected objects?",
         default=True
     )
+    Scene.polycount_trim_numbers = BoolProperty(
+        name="Trim large numbers",
+        description="Trim large numbers",
+        default=False
+    )
     Scene.polycount_options_unfold = BoolProperty(
-        name="Polycount quick options",
-        description="Polycount quick options",
+        name="Fast options",
+        description="Fast options",
         default=False
     )
 
@@ -455,6 +463,7 @@ def unregister():
         unregister_class(cls)
 
     del Scene.polycount_use_selection
+    del Scene.polycount_trim_numbers
     del Scene.polycount_options_unfold
 
 
