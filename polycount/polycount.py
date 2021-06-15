@@ -184,7 +184,7 @@ def calculate_mesh_polycount():
 
 
 def select_objects_with_ngons():
-    print(object_with_ngons)
+    # print(object_with_ngons)
     if len(object_with_ngons) > 0:
         for obj in bpy.context.view_layer.objects:
             if obj.type != 'MESH':
@@ -398,14 +398,14 @@ class POLYCOUNT_OT_user_interaction(bpy.types.Operator):
             self.refresh = False
             pass
         else:
-            if (self.make_active is not ""
-                    and bpy.data.objects.get(str(self.make_active)) is not None):
+            if (self.make_active != ""
+                    and bpy.data.objects.get(str(self.make_active)) != None):
                 # if we only want to make select an object, no need to change sorting
                 context.view_layer.objects.active = bpy.data.objects[str(
                     self.make_active)]
                 context.view_layer.objects.active.select_set(True)
             else:
-                if last_user_refresh is not "never":
+                if last_user_refresh != "never":
                     if self.poly_sort == polycount_sorting:
                         # if we want to toogle sorting type
                         polycount_sorting_ascending = not polycount_sorting_ascending
