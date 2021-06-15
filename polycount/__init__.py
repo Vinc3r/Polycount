@@ -5,8 +5,8 @@ bl_info = {
     "category": "Scene",
     "wiki_url": 'https://github.com/Vinc3r/Polycount/wiki',
     "tracker_url": 'https://github.com/Vinc3r/Polycount/issues',
-    "version": (2020, 10, 27),
-    "blender": (2, 90, 0)
+    "version": (2021, 6, 15),
+    "blender": (2, 93, 0)
 }
 
 modulesNames = ['preferences', 'polycount']
