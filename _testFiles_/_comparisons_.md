@@ -11,3 +11,6 @@
 
 *when `k` is used, it's due to software which only show this level of detail*
 
+---
+
+Why polycount is not the same depending on the software? Shahriar Shahrabi have done some investigations: [Vertex Count Higher in Engine Than in 3D Software](https://shahriyarshahrabi.medium.com/vertex-count-higher-in-engine-than-in-3d-software-badc348ada66)
