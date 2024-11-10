@@ -1,5 +1,7 @@
 # Polycount
 
+__**This addon is not maintained anymore, as it is on WTFPL license, feel free to update it ! :)**__
+
 A Blender addon helping to know about your scene polycount.
 
 [Download latest version](https://github.com/Vinc3r/Polycount/releases/latest/).
